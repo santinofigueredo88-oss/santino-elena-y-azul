@@ -1,0 +1,191 @@
+// ============================================================
+// Base de datos de ingredientes (para autocompletado y matching)
+// ============================================================
+
+export const CATEGORIAS = [
+  { id: 'lacteos', nombre: 'Lácteos', emoji: '🧀' },
+  { id: 'frutas', nombre: 'Frutas', emoji: '🍎' },
+  { id: 'verduras', nombre: 'Verduras', emoji: '🥕' },
+  { id: 'carnes', nombre: 'Carnes', emoji: '🥩' },
+  { id: 'fiambres', nombre: 'Fiambres', emoji: '🥓' },
+  { id: 'almacen', nombre: 'Almacén', emoji: '🍚' },
+  { id: 'condimentos', nombre: 'Condimentos', emoji: '🧂' },
+]
+
+export const CATEGORIA_POR_ID = Object.fromEntries(
+  CATEGORIAS.map((c) => [c.id, c])
+)
+
+export const INGREDIENTES = [
+  // ---------- Lácteos ----------
+  { id: 'leche', nombre: 'Leche', categoria: 'lacteos', sinonimos: ['leches'] },
+  { id: 'manteca', nombre: 'Manteca', categoria: 'lacteos', sinonimos: ['mantequilla'] },
+  { id: 'queso', nombre: 'Queso', categoria: 'lacteos', sinonimos: ['quesos', 'queso semiduro', 'queso cremoso', 'queso fresco'] },
+  { id: 'mozzarella', nombre: 'Mozzarella', categoria: 'lacteos', sinonimos: ['queso muzzarella', 'muzzarella'] },
+  { id: 'parmesano', nombre: 'Queso rallado', categoria: 'lacteos', sinonimos: ['parmesano', 'queso parmesano', 'rallado'] },
+  { id: 'queso-crema', nombre: 'Queso crema', categoria: 'lacteos', sinonimos: ['queso untable', 'philadelphia'] },
+  { id: 'ricota', nombre: 'Ricota', categoria: 'lacteos', sinonimos: ['requesón'] },
+  { id: 'crema', nombre: 'Crema de leche', categoria: 'lacteos', sinonimos: ['crema', 'crema para batir', 'nata'] },
+  { id: 'yogur', nombre: 'Yogur', categoria: 'lacteos', sinonimos: ['yogurt', 'yogures'] },
+  { id: 'dulce-de-leche', nombre: 'Dulce de leche', categoria: 'lacteos', sinonimos: ['dulce de leche repostero'] },
+
+  // ---------- Frutas ----------
+  { id: 'banana', nombre: 'Banana', categoria: 'frutas', sinonimos: ['bananas', 'plátano', 'platano', 'cambur'] },
+  { id: 'manzana', nombre: 'Manzana', categoria: 'frutas', sinonimos: ['manzanas'] },
+  { id: 'frutilla', nombre: 'Frutilla', categoria: 'frutas', sinonimos: ['frutillas', 'fresa', 'fresas'] },
+  { id: 'limon', nombre: 'Limón', categoria: 'frutas', sinonimos: ['limones'] },
+  { id: 'naranja', nombre: 'Naranja', categoria: 'frutas', sinonimos: ['naranjas'] },
+  { id: 'pera', nombre: 'Pera', categoria: 'frutas', sinonimos: ['peras'] },
+  { id: 'durazno', nombre: 'Durazno', categoria: 'frutas', sinonimos: ['duraznos', 'melocotón', 'melocoton'] },
+  { id: 'uva', nombre: 'Uva', categoria: 'frutas', sinonimos: ['uvas'] },
+  { id: 'sandia', nombre: 'Sandía', categoria: 'frutas', sinonimos: ['sandias', 'melón de agua'] },
+  { id: 'melon', nombre: 'Melón', categoria: 'frutas', sinonimos: ['melones'] },
+
+  // ---------- Verduras ----------
+  { id: 'tomate', nombre: 'Tomate', categoria: 'verduras', sinonimos: ['tomates', 'tomate redondo', 'tomate perita'] },
+  { id: 'cebolla', nombre: 'Cebolla', categoria: 'verduras', sinonimos: ['cebollas', 'cebolla morada', 'cebolla blanca'] },
+  { id: 'papa', nombre: 'Papa', categoria: 'verduras', sinonimos: ['papas', 'patata', 'patatas'] },
+  { id: 'zanahoria', nombre: 'Zanahoria', categoria: 'verduras', sinonimos: ['zanahorias'] },
+  { id: 'lechuga', nombre: 'Lechuga', categoria: 'verduras', sinonimos: ['lechugas'] },
+  { id: 'acelga', nombre: 'Acelga', categoria: 'verduras', sinonimos: ['acelgas'] },
+  { id: 'espinaca', nombre: 'Espinaca', categoria: 'verduras', sinonimos: ['espinacas'] },
+  { id: 'zapallito', nombre: 'Zapallito', categoria: 'verduras', sinonimos: ['zapallitos', 'zucchini', 'calabacín', 'calabacin'] },
+  { id: 'calabaza', nombre: 'Calabaza', categoria: 'verduras', sinonimos: ['zapallo', 'zapallos', 'anco'] },
+  { id: 'berenjena', nombre: 'Berenjena', categoria: 'verduras', sinonimos: ['berenjenas'] },
+  { id: 'morron', nombre: 'Morrón', categoria: 'verduras', sinonimos: ['morrones', 'pimiento', 'pimientos', 'pimiento morrón'] },
+  { id: 'ajo', nombre: 'Ajo', categoria: 'verduras', sinonimos: ['ajos', 'diente de ajo'] },
+  { id: 'choclo', nombre: 'Choclo', categoria: 'verduras', sinonimos: ['choclos', 'maíz', 'choclo en lata'] },
+  { id: 'arvejas', nombre: 'Arvejas', categoria: 'verduras', sinonimos: ['arveja', 'guisantes', 'chícharos', 'arvejas en lata'] },
+  { id: 'verdeo', nombre: 'Cebolla de verdeo', categoria: 'verduras', sinonimos: ['cebolleta', 'cebollín'] },
+  { id: 'perejil', nombre: 'Perejil', categoria: 'verduras', sinonimos: ['perejil fresco'] },
+  { id: 'apio', nombre: 'Apio', categoria: 'verduras', sinonimos: ['apios'] },
+  { id: 'puerro', nombre: 'Puerro', categoria: 'verduras', sinonimos: ['puerros', 'poro'] },
+  { id: 'remolacha', nombre: 'Remolacha', categoria: 'verduras', sinonimos: ['remolachas', 'betabel', 'betarraga'] },
+  { id: 'palta', nombre: 'Palta', categoria: 'verduras', sinonimos: ['paltas', 'aguacate', 'aguacates'] },
+  { id: 'pepino', nombre: 'Pepino', categoria: 'verduras', sinonimos: ['pepinos'] },
+  { id: 'brocoli', nombre: 'Brócoli', categoria: 'verduras', sinonimos: ['brocolis', 'brécol'] },
+  { id: 'coliflor', nombre: 'Coliflor', categoria: 'verduras', sinonimos: ['coliflores'] },
+  { id: 'batata', nombre: 'Batata', categoria: 'verduras', sinonimos: ['batatas', 'camote', 'boniato'] },
+  { id: 'hongos', nombre: 'Champiñones', categoria: 'verduras', sinonimos: ['champiñon', 'champiñones', 'hongos', 'portobello'] },
+  { id: 'albahaca', nombre: 'Albahaca', categoria: 'verduras', sinonimos: ['albahaca fresca'] },
+
+  // ---------- Carnes ----------
+  { id: 'carne', nombre: 'Carne (nalga, cuadril)', categoria: 'carnes', sinonimos: ['nalga', 'cuadril', 'carne de res', 'carne de vaca', 'bife', 'bifes'] },
+  { id: 'carne-picada', nombre: 'Carne picada', categoria: 'carnes', sinonimos: ['picada', 'carne molida'] },
+  { id: 'pollo', nombre: 'Pollo', categoria: 'carnes', sinonimos: ['pechuga de pollo', 'pechuga', 'supremas', 'suprema de pollo', 'pollo entero', 'muslos de pollo', 'pata muslo'] },
+  { id: 'pescado', nombre: 'Pescado', categoria: 'carnes', sinonimos: ['merluza', 'filet de merluza', 'filete de pescado', 'filet'] },
+  { id: 'atun', nombre: 'Atún (lata)', categoria: 'carnes', sinonimos: ['atún', 'atun en lata', 'atun al natural'] },
+  { id: 'vacio', nombre: 'Vacío', categoria: 'carnes', sinonimos: [] },
+  { id: 'matambre', nombre: 'Matambre', categoria: 'carnes', sinonimos: [] },
+  { id: 'chorizo', nombre: 'Chorizo', categoria: 'carnes', sinonimos: ['chorizos'] },
+  { id: 'cerdo', nombre: 'Cerdo', categoria: 'carnes', sinonimos: ['bondiola', 'carré de cerdo', 'costillas de cerdo'] },
+
+  // ---------- Fiambres ----------
+  { id: 'jamon', nombre: 'Jamón', categoria: 'fiambres', sinonimos: ['jamon cocido', 'jamon crudo', 'fiambre'] },
+  { id: 'salame', nombre: 'Salame', categoria: 'fiambres', sinonimos: ['salamín', 'salamin'] },
+  { id: 'mortadela', nombre: 'Mortadela', categoria: 'fiambres', sinonimos: [] },
+  { id: 'panceta', nombre: 'Panceta', categoria: 'fiambres', sinonimos: ['bacon', 'tocino'] },
+
+  // ---------- Almacén ----------
+  { id: 'huevo', nombre: 'Huevo', categoria: 'almacen', sinonimos: ['huevos'] },
+  { id: 'arroz', nombre: 'Arroz', categoria: 'almacen', sinonimos: ['arroz blanco', 'arroz integral'] },
+  { id: 'fideos', nombre: 'Fideos', categoria: 'almacen', sinonimos: ['fideo', 'tallarines', 'spaghetti', 'espagueti', 'guisero', 'tirabuzones', 'coditos'] },
+  { id: 'harina', nombre: 'Harina', categoria: 'almacen', sinonimos: ['harina de trigo', 'harina 0000'] },
+  { id: 'azucar', nombre: 'Azúcar', categoria: 'almacen', sinonimos: ['azúcar blanca', 'azúcar común'] },
+  { id: 'pure-tomate', nombre: 'Puré de tomate', categoria: 'almacen', sinonimos: ['salsa de tomate', 'tomate triturado', 'tomate en lata', 'tomate concentrado'] },
+  { id: 'lentejas', nombre: 'Lentejas', categoria: 'almacen', sinonimos: ['lenteja'] },
+  { id: 'garbanzos', nombre: 'Garbanzos', categoria: 'almacen', sinonimos: ['garbanzo'] },
+  { id: 'porotos', nombre: 'Porotos', categoria: 'almacen', sinonimos: ['poroto', 'frijoles', 'alubias'] },
+  { id: 'pan', nombre: 'Pan', categoria: 'almacen', sinonimos: ['pan frances', 'pan francés', 'pan de miga', 'pan lactal', 'panes', 'pan de hamburguesa', 'pan para hamburguesa'] },
+  { id: 'pan-rallado', nombre: 'Pan rallado', categoria: 'almacen', sinonimos: ['breadcrumbs', 'rebozador'] },
+  { id: 'avena', nombre: 'Avena', categoria: 'almacen', sinonimos: ['avena arrollada'] },
+  { id: 'maicena', nombre: 'Maicena', categoria: 'almacen', sinonimos: ['fécula de maíz', 'maizena'] },
+  { id: 'levadura', nombre: 'Levadura', categoria: 'almacen', sinonimos: ['levadura fresca', 'levadura seca'] },
+  { id: 'polvo-hornear', nombre: 'Polvo de hornear', categoria: 'almacen', sinonimos: ['polvo leudante', 'levadura química'] },
+  { id: 'cafe', nombre: 'Café', categoria: 'almacen', sinonimos: ['café molido', 'café instantáneo'] },
+  { id: 'te', nombre: 'Té', categoria: 'almacen', sinonimos: ['té negro', 'saquitos de te'] },
+  { id: 'yerba', nombre: 'Yerba mate', categoria: 'almacen', sinonimos: ['yerba'] },
+  { id: 'dulce-batata', nombre: 'Dulce de batata', categoria: 'almacen', sinonimos: ['dulce de membrillo'] },
+  { id: 'mermelada', nombre: 'Mermelada', categoria: 'almacen', sinonimos: ['mermelada de frutilla', 'mermelada de durazno'] },
+  { id: 'chocolate', nombre: 'Chocolate', categoria: 'almacen', sinonimos: ['chocolate amargo', 'chocolate con leche', 'cacao', 'tableta de chocolate'] },
+  { id: 'caldo', nombre: 'Caldo', categoria: 'almacen', sinonimos: ['caldo de verdura', 'caldo de pollo', 'caldo concentrado', 'cubo de caldo'] },
+  { id: 'aceitunas', nombre: 'Aceitunas', categoria: 'almacen', sinonimos: ['aceitunas verdes', 'aceitunas negras'] },
+  { id: 'tapas-empanada', nombre: 'Tapas de empanada', categoria: 'almacen', sinonimos: ['tapas para empanada'] },
+  { id: 'masa-tarta', nombre: 'Masa de tarta', categoria: 'almacen', sinonimos: ['masa para tarta', 'tapas de tarta'] },
+  { id: 'polenta', nombre: 'Polenta', categoria: 'almacen', sinonimos: ['harina de maíz para polenta'] },
+  { id: 'esencia-vainilla', nombre: 'Esencia de vainilla', categoria: 'almacen', sinonimos: ['vainilla', 'esencia de vainillín'] },
+  { id: 'mayonesa', nombre: 'Mayonesa', categoria: 'almacen', sinonimos: [] },
+  { id: 'mostaza', nombre: 'Mostaza', categoria: 'almacen', sinonimos: [] },
+
+  // ---------- Condimentos ----------
+  { id: 'sal', nombre: 'Sal', categoria: 'condimentos', sinonimos: ['sal fina', 'sal entrefina'] },
+  { id: 'pimienta', nombre: 'Pimienta', categoria: 'condimentos', sinonimos: ['pimienta negra'] },
+  { id: 'aceite', nombre: 'Aceite', categoria: 'condimentos', sinonimos: ['aceite de girasol', 'aceite de oliva'] },
+  { id: 'agua', nombre: 'Agua', categoria: 'condimentos', sinonimos: [] },
+  { id: 'oregano', nombre: 'Orégano', categoria: 'condimentos', sinonimos: ['orégano seco'] },
+  { id: 'pimenton', nombre: 'Pimentón', categoria: 'condimentos', sinonimos: ['pimentón dulce', 'paprika', 'ají de color'] },
+  { id: 'aji-molido', nombre: 'Ají molido', categoria: 'condimentos', sinonimos: ['ají picante', 'chile en polvo'] },
+  { id: 'comino', nombre: 'Comino', categoria: 'condimentos', sinonimos: ['comino molido'] },
+  { id: 'laurel', nombre: 'Laurel', categoria: 'condimentos', sinonimos: ['hoja de laurel'] },
+  { id: 'provenzal', nombre: 'Provenzal', categoria: 'condimentos', sinonimos: ['mix de hierbas', 'hierbas provenzales'] },
+  { id: 'vinagre', nombre: 'Vinagre', categoria: 'condimentos', sinonimos: ['vinagre de vino', 'vinagre de alcohol'] },
+  { id: 'canela', nombre: 'Canela', categoria: 'condimentos', sinonimos: ['canela en polvo'] },
+  { id: 'salsa-soja', nombre: 'Salsa de soja', categoria: 'condimentos', sinonimos: ['soja', 'soya', 'sillao'] },
+]
+
+// Mapa rápido id -> ingrediente
+export const INGREDIENTE_POR_ID = Object.fromEntries(
+  INGREDIENTES.map((i) => [i.id, i])
+)
+
+// Ingredientes básicos: se asumen siempre disponibles en casa.
+// No cuentan como faltantes al calcular el match.
+export const BASICOS = new Set([
+  'sal',
+  'pimienta',
+  'aceite',
+  'agua',
+  'azucar',
+  'oregano',
+  'pimenton',
+  'aji-molido',
+  'comino',
+  'laurel',
+  'canela',
+])
+
+// Ingredientes más comunes para los botones de acceso rápido del inicio
+export const INGREDIENTES_RAPIDOS = [
+  'huevo',
+  'leche',
+  'manteca',
+  'queso',
+  'jamon',
+  'tomate',
+  'cebolla',
+  'papa',
+  'zanahoria',
+  'morron',
+  'pollo',
+  'carne',
+  'carne-picada',
+  'atun',
+  'arroz',
+  'fideos',
+  'harina',
+  'pure-tomate',
+  'pan',
+  'crema',
+]
+
+// Utilidades para nombres
+export function nombreDeIngrediente(id) {
+  const ing = INGREDIENTE_POR_ID[id]
+  return ing ? ing.nombre : id
+}
+
+export function emojiDeIngrediente(id) {
+  const ing = INGREDIENTE_POR_ID[id]
+  if (!ing) return '🥫'
+  return CATEGORIA_POR_ID[ing.categoria]?.emoji ?? '🥫'
+}

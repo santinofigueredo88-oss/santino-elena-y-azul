@@ -52,8 +52,8 @@ export default function Header() {
                 aria-current={activo ? 'page' : undefined}
                 className={`flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-sm font-bold transition-all ${
                   activo
-                    ? 'bg-orange-600 text-white shadow-md shadow-orange-600/25'
-                    : 'text-stone-600 hover:bg-orange-100 dark:text-stone-300 dark:hover:bg-stone-800'
+                    ? 'bg-green-600 text-white shadow-md shadow-green-600/25'
+                    : 'text-stone-600 hover:bg-green-100 dark:text-stone-300 dark:hover:bg-stone-800'
                 }`}
               >
                 <span aria-hidden="true">{item.emoji}</span>
@@ -61,7 +61,7 @@ export default function Header() {
                 {conteo > 0 && (
                   <span
                     className={`grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-black ${
-                      activo ? 'bg-white/25 text-white' : 'bg-orange-600 text-white'
+                      activo ? 'bg-white/25 text-white' : 'bg-green-600 text-white'
                     }`}
                   >
                     {conteo}

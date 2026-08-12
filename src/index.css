@@ -9,9 +9,10 @@
   --font-display: "Fraunces", "Nunito", ui-serif, Georgia, serif;
 
   /* ── Paleta "Verde frescura" ─────────────────────────────────────────
-     Los tokens naranja pasan a ser VERDE esmeralda y los ámbar pasan a
-     ser LIMA. Así toda la app (botones, hovers, badges, gradientes) se
-     actualiza de forma consistente sin tocar cada componente. */
+     Los componentes ya usan verde (green-*) y lima (lime-*) nativos.
+     Estos overrides de naranja→verde y ámbar→lima quedan como red de
+     seguridad: cualquier clase residual naranja/ámbar se ve verde, así
+     la app queda 100% verde y consistente. */
   --color-orange-50: #f0fdf4;
   --color-orange-100: #dcfce7;
   --color-orange-200: #bbf7d0;

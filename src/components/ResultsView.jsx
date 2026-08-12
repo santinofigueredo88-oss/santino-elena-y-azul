@@ -52,7 +52,7 @@ function FiltersBar({ filtros, setFiltros, totales }) {
             type="checkbox"
             checked={filtros.soloFavoritos}
             onChange={(e) => setFiltros({ ...filtros, soloFavoritos: e.target.checked })}
-            className="h-5 w-5 accent-orange-600"
+            className="h-5 w-5 accent-green-600"
           />
           Solo favoritos ❤️
         </label>

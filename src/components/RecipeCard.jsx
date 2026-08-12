@@ -5,7 +5,7 @@ import RecipeImage from './RecipeImage.jsx'
 
 const NIVEL_DIFICULTAD = {
   facil: { nombre: 'Fácil', emoji: '🙂', color: 'text-green-600 dark:text-green-400' },
-  media: { nombre: 'Media', emoji: '😌', color: 'text-amber-600 dark:text-amber-400' },
+  media: { nombre: 'Media', emoji: '😌', color: 'text-lime-600 dark:text-lime-400' },
   dificil: { nombre: 'Difícil', emoji: '🧑‍🍳', color: 'text-red-600 dark:text-red-400' },
 }
 
@@ -65,7 +65,7 @@ export default function RecipeCard({ item, onAbrir }) {
 
         {/* Contenido */}
         <div className="flex flex-1 flex-col gap-2.5 p-4">
-          <h3 className="text-lg font-black leading-snug text-stone-900 transition-colors group-hover:text-orange-600 dark:text-white dark:group-hover:text-orange-400">
+          <h3 className="text-lg font-black leading-snug text-stone-900 transition-colors group-hover:text-green-600 dark:text-white dark:group-hover:text-green-400">
             {receta.nombre}
           </h3>
 
@@ -79,7 +79,7 @@ export default function RecipeCard({ item, onAbrir }) {
           </div>
 
           {faltantes > 0 ? (
-            <p className="mt-auto rounded-xl bg-amber-50 px-3 py-2 text-[13px] font-bold leading-snug text-amber-800 ring-1 ring-amber-200/70 dark:bg-amber-900/40 dark:text-amber-200 dark:ring-amber-800/60">
+            <p className="mt-auto rounded-xl bg-lime-50 px-3 py-2 text-[13px] font-bold leading-snug text-lime-800 ring-1 ring-lime-200/70 dark:bg-lime-900/40 dark:text-lime-200 dark:ring-lime-800/60">
               ⚠️ Te faltan: {faltantesNombres}
               {faltantes > 2 ? ` (+${faltantes - 2} más)` : ''}
             </p>

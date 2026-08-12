@@ -27,7 +27,7 @@ function Stepper({ porciones, setPorciones }) {
         onClick={() => setPorciones((p) => Math.max(1, p - 1))}
         disabled={porciones <= 1}
         aria-label="Menos porciones"
-        className="grid h-10 w-10 place-items-center rounded-xl bg-white text-lg font-black text-stone-700 shadow-sm transition-all hover:bg-orange-100 disabled:opacity-40 dark:bg-stone-700 dark:text-white dark:hover:bg-stone-600"
+        className="grid h-10 w-10 place-items-center rounded-xl bg-white text-lg font-black text-stone-700 shadow-sm transition-all hover:bg-green-100 disabled:opacity-40 dark:bg-stone-700 dark:text-white dark:hover:bg-stone-600"
       >
         −
       </button>
@@ -39,7 +39,7 @@ function Stepper({ porciones, setPorciones }) {
         onClick={() => setPorciones((p) => Math.min(12, p + 1))}
         disabled={porciones >= 12}
         aria-label="Más porciones"
-        className="grid h-10 w-10 place-items-center rounded-xl bg-white text-lg font-black text-stone-700 shadow-sm transition-all hover:bg-orange-100 disabled:opacity-40 dark:bg-stone-700 dark:text-white dark:hover:bg-stone-600"
+        className="grid h-10 w-10 place-items-center rounded-xl bg-white text-lg font-black text-stone-700 shadow-sm transition-all hover:bg-green-100 disabled:opacity-40 dark:bg-stone-700 dark:text-white dark:hover:bg-stone-600"
       >
         +
       </button>
@@ -195,7 +195,7 @@ export default function RecipeModal() {
                   ✅ ¡Tenés todos los ingredientes!
                 </span>
               ) : (
-                <span className="mt-3 inline-block rounded-full bg-amber-500 px-4 py-1.5 text-sm font-extrabold text-white shadow-md">
+                <span className="mt-3 inline-block rounded-full bg-lime-600 px-4 py-1.5 text-sm font-extrabold text-white shadow-md">
                   ⚠️ Te faltan {faltantes === 1 ? '1 ingrediente' : `${faltantes} ingredientes`}
                 </span>
               )}
@@ -206,14 +206,14 @@ export default function RecipeModal() {
             {/* Bot guía */}
             <button
               onClick={() => setBotAbierto(true)}
-              className="group mb-5 flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-600 to-amber-500 px-5 py-4 font-extrabold text-white shadow-lg shadow-orange-600/30 transition-all hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
+              className="group mb-5 flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-green-600 to-lime-500 px-5 py-4 font-extrabold text-white shadow-lg shadow-green-600/30 transition-all hover:shadow-xl hover:shadow-green-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
             >
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/20 text-xl backdrop-blur transition-transform group-hover:rotate-6" aria-hidden="true">
                 🤖
               </span>
               <span className="text-left leading-tight">
                 <span className="block text-base">Guíame paso a paso</span>
-                <span className="block text-xs font-bold text-orange-100">
+                <span className="block text-xs font-bold text-green-100">
                   Te acompaño a cocinar y reemplazo lo que te falte
                 </span>
               </span>
@@ -240,7 +240,7 @@ export default function RecipeModal() {
                     faltantesDetalle.map((i) => i.id)
                   )
                 }}
-                className="mb-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-100 px-4 py-3.5 font-extrabold text-orange-800 transition-all hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-200 dark:hover:bg-orange-900"
+                className="mb-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-green-100 px-4 py-3.5 font-extrabold text-green-800 transition-all hover:bg-green-200 dark:bg-green-900/50 dark:text-green-200 dark:hover:bg-green-900"
               >
                 🛒 Agregar los {faltantesDetalle.length} faltantes a la lista de compras
               </button>
@@ -287,7 +287,7 @@ export default function RecipeModal() {
             <ol className="mt-3 flex flex-col gap-3">
               {receta.pasos.map((paso, i) => (
                 <li key={i} className="flex gap-3">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-orange-600 text-sm font-black text-white shadow-sm">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-green-600 text-sm font-black text-white shadow-sm">
                     {i + 1}
                   </span>
                   <p className="pt-1.5 text-[15px] font-semibold leading-relaxed text-stone-700 dark:text-stone-300">

@@ -346,14 +346,14 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
   return (
     <div className="flex h-full min-h-0 flex-col">
       {/* Encabezado del chat */}
-      <div className="flex items-center gap-3 border-b border-stone-200/70 bg-gradient-to-r from-orange-600 to-amber-500 px-4 py-3 dark:border-stone-700">
+      <div className="flex items-center gap-3 border-b border-stone-200/70 bg-gradient-to-r from-green-600 to-lime-500 px-4 py-3 dark:border-stone-700">
         <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/20 text-2xl backdrop-blur">
           👨‍🍳
-          <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-orange-600 bg-green-400" aria-hidden="true" />
+          <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-green-600 bg-green-400" aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-black text-white">Chef Guía · {receta.nombre}</p>
-          <p className="text-xs font-bold text-orange-100">
+          <p className="text-xs font-bold text-green-100">
             {escribiendo ? 'escribiendo…' : paso >= 0 ? `Paso ${paso + 1} de ${totalPasos}` : 'en línea · ayudándote a cocinar'}
           </p>
         </div>
@@ -370,7 +370,7 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
       {paso >= 0 && (
         <div className="h-1.5 w-full bg-stone-100 dark:bg-stone-800">
           <div
-            className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-500"
+            className="h-full bg-gradient-to-r from-green-500 to-lime-500 transition-all duration-500"
             style={{ width: `${progreso}%` }}
             role="progressbar"
             aria-valuenow={paso + 1}
@@ -390,14 +390,14 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
         {mensajes.map((m) =>
           m.autor === 'user' ? (
             <div key={m.id} className="flex justify-end animate-fade-up">
-              <div className="max-w-[85%] rounded-2xl rounded-br-md bg-orange-600 px-4 py-2.5 text-[15px] font-bold text-white shadow-sm">
+              <div className="max-w-[85%] rounded-2xl rounded-br-md bg-green-600 px-4 py-2.5 text-[15px] font-bold text-white shadow-sm">
                 {m.texto}
               </div>
             </div>
           ) : m.tipo === 'paso' ? (
             <div key={m.id} className="animate-fade-up">
               <div className="flex items-center gap-2">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-orange-600 text-sm font-black text-white shadow-sm">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-green-600 text-sm font-black text-white shadow-sm">
                   {m.numero}
                 </span>
                 <span className="text-xs font-black uppercase tracking-wide text-stone-400">
@@ -442,7 +442,7 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
             <button
               key={chip}
               onClick={() => enviar(chip)}
-              className="rounded-full bg-orange-50 px-3 py-1.5 text-[13px] font-extrabold text-orange-700 ring-1 ring-orange-200 transition-all hover:-translate-y-0.5 hover:bg-orange-100 hover:shadow-sm active:translate-y-0 dark:bg-orange-900/40 dark:text-orange-200 dark:ring-orange-800 dark:hover:bg-orange-900/70"
+              className="rounded-full bg-green-50 px-3 py-1.5 text-[13px] font-extrabold text-green-700 ring-1 ring-green-200 transition-all hover:-translate-y-0.5 hover:bg-green-100 hover:shadow-sm active:translate-y-0 dark:bg-green-900/40 dark:text-green-200 dark:ring-green-800 dark:hover:bg-green-900/70"
             >
               {chip}
             </button>
@@ -465,12 +465,12 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
           type="text"
           placeholder='Escribí… ej: "no tengo tomate"'
           aria-label="Escribí tu mensaje al guía"
-          className="w-full flex-1 rounded-2xl border-2 border-stone-200 bg-crema-50 px-4 py-2.5 text-[15px] font-semibold text-stone-800 placeholder:text-stone-400 focus:border-orange-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+          className="w-full flex-1 rounded-2xl border-2 border-stone-200 bg-crema-50 px-4 py-2.5 text-[15px] font-semibold text-stone-800 placeholder:text-stone-400 focus:border-green-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
         />
         <button
           type="submit"
           aria-label="Enviar mensaje"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-orange-600 text-lg text-white shadow-md shadow-orange-600/25 transition-all hover:bg-orange-500 active:scale-90"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-green-600 text-lg text-white shadow-md shadow-green-600/25 transition-all hover:bg-green-500 active:scale-90"
         >
           ➤
         </button>

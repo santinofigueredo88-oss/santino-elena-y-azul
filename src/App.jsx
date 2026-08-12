@@ -14,7 +14,7 @@ function Footer() {
         🍳 ¿Qué Cocino? — cociná con lo que tenés
       </p>
       <p className="mt-1 text-xs font-semibold text-stone-400 dark:text-stone-500">
-        {RECETAS.length} recetas con foto · Hecho con cariño, muchas papas 🥔 y un chef virtual 🤖
+        {RECETAS.length} recetas · Hecho con cariño, muchas papas 🥔 y un chef virtual 🤖
       </p>
     </footer>
   )

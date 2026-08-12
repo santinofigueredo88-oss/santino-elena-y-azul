@@ -86,6 +86,20 @@ export const IMAGEN_POR_RECETA = {
   'guiso-de-garbanzos': 'https://images.unsplash.com/photo-1515543904379-3d757afe72e4?auto=format&fit=crop&w=900&q=70',
   'bifes-a-la-criolla': 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=900&q=70',
   'locro': 'https://images.unsplash.com/photo-1611270629569-8b357cb88da9?auto=format&fit=crop&w=900&q=70',
+
+  // Recetas nuevas: ensaladas, pastas y postres (fotos verificadas HTTP 200).
+  'ensalada-caesar': 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=900&q=70',
+  'ensalada-caprese': 'https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?auto=format&fit=crop&w=900&q=70',
+  'ensalada-de-garbanzos': 'https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=900&q=70',
+  'ensalada-waldorf': 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?auto=format&fit=crop&w=900&q=70',
+  'fideos-con-pesto': 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=900&q=70',
+  'fideos-con-pollo-y-crema': 'https://images.unsplash.com/photo-1608219992759-8d74ed8d76eb?auto=format&fit=crop&w=900&q=70',
+  'fideos-con-calabaza': 'https://images.unsplash.com/photo-1626804475297-41608ea09aeb?auto=format&fit=crop&w=900&q=70',
+  'fideos-con-brocoli': 'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&w=900&q=70',
+  'mousse-de-chocolate': 'https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=900&q=70',
+  'torta-de-manzana': 'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&w=900&q=70',
+  'budin-de-vainilla': 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&w=900&q=70',
+  'torta-de-yogur': 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=900&q=70',
 }
 
 /** Devuelve la foto de una receta (o null si no hay). */

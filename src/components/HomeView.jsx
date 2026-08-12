@@ -17,6 +17,7 @@ const DESTACADAS = ['panqueques', 'milanesas-de-carne', 'fideos-con-tuco', 'pizz
 
 // ---------------- Autocompletado ----------------
 function SuggestionList({ query, onSelect }) {
+  const { t } = useApp()
   const sugerencias = useMemo(() => {
     const n = normalizarTexto(query)
     if (!n) return []
@@ -38,7 +39,7 @@ function SuggestionList({ query, onSelect }) {
   return (
     <ul
       role="listbox"
-      aria-label="Sugerencias de ingredientes"
+      aria-label={t('home.sugerenciasAria')}
       className="absolute left-0 right-0 top-full z-30 mt-2 max-h-72 overflow-auto rounded-2xl border border-stone-200 bg-white p-1.5 shadow-xl shadow-stone-900/10 dark:border-stone-700 dark:bg-stone-800"
     >
       {sugerencias.map((s, idx) => {
@@ -58,7 +59,7 @@ function SuggestionList({ query, onSelect }) {
                   {s.nombre}
                 </span>
                 <span className="block text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {s.custom ? 'Agregar ingrediente propio' : (cat?.nombre ?? 'Ingrediente')}
+                  {s.custom ? t('home.agregarPropio') : cat ? t('categoria.' + cat.id, null, cat.nombre) : t('home.ingrediente')}
                 </span>
               </span>
             </button>
@@ -71,10 +72,10 @@ function SuggestionList({ query, onSelect }) {
 
 // ---------------- Chips de ingredientes agregados ----------------
 function ChipsList() {
-  const { ingredientes, quitarIngrediente } = useApp()
+  const { ingredientes, quitarIngrediente, t } = useApp()
   if (ingredientes.length === 0) return null
   return (
-    <div className="flex flex-wrap items-center gap-2" aria-label="Ingredientes agregados">
+    <div className="flex flex-wrap items-center gap-2" aria-label={t('home.ingredientesAria')}>
       {ingredientes.map((ing) => {
         const conocido = INGREDIENTE_POR_ID[ing.id]
         const emoji = conocido
@@ -89,7 +90,7 @@ function ChipsList() {
             {ing.nombre}
             <button
               onClick={() => quitarIngrediente(ing.id)}
-              aria-label={`Quitar ${ing.nombre}`}
+              aria-label={t('home.quitarAria', { nombre: ing.nombre })}
               className="grid h-7 w-7 place-items-center rounded-full bg-stone-100 text-stone-500 transition-colors hover:bg-red-100 hover:text-red-600 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-red-900 dark:hover:text-red-300"
             >
               ✕
@@ -103,7 +104,7 @@ function ChipsList() {
 
 // ---------------- Botones rápidos por categoría ----------------
 function QuickButtons() {
-  const { ingredientes, agregarIngrediente } = useApp()
+  const { ingredientes, agregarIngrediente, t } = useApp()
   const [categoria, setCategoria] = useState('rapidos')
   const ids = useMemo(() => new Set(ingredientes.map((i) => i.id)), [ingredientes])
 
@@ -115,9 +116,9 @@ function QuickButtons() {
   }, [categoria])
 
   return (
-    <section aria-label="Agregar ingredientes rápido" className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-900 dark:ring-stone-800 sm:p-6">
+    <section aria-label={t('home.rapidosAria')} className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-900 dark:ring-stone-800 sm:p-6">
       <h2 className="mb-3 font-display text-lg font-black text-stone-900 dark:text-white">
-        Agregá ingredientes rápidos ✨
+        {t('home.rapidosTitulo')}
       </h2>
       <div className="mb-4 flex flex-wrap gap-2">
         <button
@@ -129,7 +130,7 @@ function QuickButtons() {
               : 'bg-crema-100 text-stone-600 hover:bg-green-100 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'
           }`}
         >
-          ⭐ Más comunes
+          {t('home.masComunes')}
         </button>
         {CATEGORIAS.map((cat) => (
           <button
@@ -142,7 +143,7 @@ function QuickButtons() {
                 : 'bg-crema-100 text-stone-600 hover:bg-green-100 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'
             }`}
           >
-            {cat.emoji} {cat.nombre}
+            {cat.emoji} {t('categoria.' + cat.id, null, cat.nombre)}
           </button>
         ))}
       </div>
@@ -173,6 +174,7 @@ function QuickButtons() {
 
 // ---------------- Hero ilustrado (sin fotos) ----------------
 function HeroIlustrado({ cantidad }) {
+  const { t } = useApp()
   return (
     <section className="relative overflow-hidden">
       {/* Fondo con gradiente verde suave */}
@@ -201,17 +203,18 @@ function HeroIlustrado({ cantidad }) {
 
       <div className="relative mx-auto max-w-3xl px-4 pb-16 pt-16 text-center sm:pt-20">
         <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 text-sm font-extrabold text-green-800 shadow-sm ring-1 ring-green-200 backdrop-blur dark:bg-green-950/60 dark:text-green-200 dark:ring-green-800">
-          🇦🇷 Cocina argentina y casera · {cantidad} recetas
+          {t('home.heroBadge', { n: cantidad })}
         </span>
         <h1 className="mt-4 font-display text-4xl font-black leading-tight tracking-tight text-stone-900 dark:text-white sm:text-6xl">
-          ¿Qué cocino{' '}
+          {t('home.queCocino')}{' '}
           <span className="bg-gradient-to-r from-green-600 to-lime-500 bg-clip-text text-transparent">
-            hoy?
+            {t('home.hoy')}
           </span>
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-lg font-bold leading-relaxed text-stone-600 dark:text-stone-300 sm:text-xl">
-          Contanos qué tenés en la heladera y te decimos qué podés cocinar con eso.
-          Paso a paso y un <span className="text-green-600 dark:text-lime-400">chef virtual</span> que te guía en vivo. 👨‍🍳
+          {t('home.heroP1')} {t('home.heroP2a')}{' '}
+          <span className="text-green-600 dark:text-lime-400">{t('home.chefVirtual')}</span>{' '}
+          {t('home.heroP2b')}
         </p>
       </div>
     </section>
@@ -220,7 +223,7 @@ function HeroIlustrado({ cantidad }) {
 
 // ---------------- Vista principal ----------------
 export default function HomeView() {
-  const { ingredientes, agregarIngrediente, limpiarIngredientes, irA, idsIngredientes, abrirReceta } = useApp()
+  const { ingredientes, agregarIngrediente, limpiarIngredientes, irA, idsIngredientes, abrirReceta, t, tN } = useApp()
   const [texto, setTexto] = useState('')
   const [foco, setFoco] = useState(false)
 
@@ -277,7 +280,7 @@ export default function HomeView() {
           className="relative rounded-3xl bg-white p-4 shadow-lg shadow-green-900/10 ring-1 ring-stone-200/60 dark:bg-stone-900 dark:ring-stone-800 sm:p-6"
         >
           <label htmlFor="input-ingrediente" className="mb-2 block text-sm font-extrabold uppercase tracking-wide text-stone-500 dark:text-stone-400">
-            ¿Qué tenés? 🧺
+            {t('home.queTenes')}
           </label>
           <div className="flex flex-col gap-2 sm:flex-row">
             <input
@@ -287,7 +290,7 @@ export default function HomeView() {
               onChange={(e) => setTexto(e.target.value)}
               onFocus={() => setFoco(true)}
               onBlur={() => setTimeout(() => setFoco(false), 120)}
-              placeholder="Ej.: tomate, cebolla, huevos…"
+              placeholder={t('home.placeholder')}
               autoComplete="off"
               className="w-full flex-1 rounded-2xl border-2 border-stone-200 bg-crema-50 px-5 py-3.5 text-lg font-semibold text-stone-800 placeholder:text-stone-400 focus:border-green-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 dark:placeholder:text-stone-500"
             />
@@ -295,7 +298,7 @@ export default function HomeView() {
               type="submit"
               className="rounded-2xl bg-stone-900 px-6 py-3.5 text-lg font-extrabold text-white transition-all hover:bg-stone-700 active:scale-95 dark:bg-white dark:text-stone-900 dark:hover:bg-stone-200"
             >
-              + Agregar
+              {t('home.agregar')}
             </button>
           </div>
           {foco && <SuggestionList query={texto} onSelect={(nombre) => { agregarIngrediente(nombre); setTexto('') }} />}
@@ -311,19 +314,19 @@ export default function HomeView() {
               disabled={ingredientes.length === 0}
               className="btn-primary w-full sm:w-auto"
             >
-              🔍 Buscar recetas
+              {t('home.buscar')}
             </button>
             {ingredientes.length > 0 && (
               <>
                 <p className="text-sm font-bold text-stone-500 dark:text-stone-400">
-                  {totalPosibles} receta{totalPosibles === 1 ? '' : 's'} list{totalPosibles === 1 ? 'a' : 'as'} para hacer
+                  {tN('home.recetaLista', 'home.recetasListas', totalPosibles)}
                 </p>
                 <button
                   type="button"
                   onClick={limpiarIngredientes}
                   className="text-sm font-bold text-stone-400 underline-offset-4 hover:text-red-500 hover:underline dark:text-stone-500 dark:hover:text-red-400"
                 >
-                  Vaciar lista
+                  {t('home.vaciar')}
                 </button>
               </>
             )}
@@ -342,17 +345,17 @@ export default function HomeView() {
           <div className="mb-6 flex items-end justify-between gap-3 border-b border-stone-200/70 pb-5 dark:border-stone-800">
             <div>
               <h2 className="font-display text-2xl font-black tracking-tight text-stone-900 dark:text-white sm:text-3xl">
-                ✨ Mejores opciones para tu heladera
+                {t('home.mejores')}
               </h2>
               <p className="mt-0.5 text-sm font-semibold text-stone-500 dark:text-stone-400">
-                Con {ingredientes.length} ingrediente{ingredientes.length === 1 ? '' : 's'} cargado{ingredientes.length === 1 ? '' : 's'}: primero lo que podés hacer ya mismo.
+                {tN('home.conIngredientes', 'home.conIngredientesPlural', ingredientes.length)}
               </p>
             </div>
             <button
               onClick={() => irA('resultados')}
               className="hidden shrink-0 rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-green-600 ring-1 ring-green-200 transition-all hover:bg-green-50 sm:block dark:bg-stone-900 dark:text-green-400 dark:ring-green-800 dark:hover:bg-stone-800"
             >
-              Ver todas →
+              {t('home.verTodas')}
             </button>
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -369,17 +372,17 @@ export default function HomeView() {
           <div className="mb-6 flex items-end justify-between gap-3 border-b border-stone-200/70 pb-5 dark:border-stone-800">
             <div>
               <h2 className="font-display text-2xl font-black tracking-tight text-stone-900 dark:text-white sm:text-3xl">
-                🍽️ Recetas destacadas
+                {t('home.destacadas')}
               </h2>
               <p className="mt-0.5 text-sm font-semibold text-stone-500 dark:text-stone-400">
-                Ideas para inspirarte: tocá una y probá el guía paso a paso.
+                {t('home.destacadasSub')}
               </p>
             </div>
             <button
               onClick={() => irA('resultados')}
               className="hidden shrink-0 rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-green-600 ring-1 ring-green-200 transition-all hover:bg-green-50 sm:block dark:bg-stone-900 dark:text-green-400 dark:ring-green-800 dark:hover:bg-stone-800"
             >
-              Ver todas →
+              {t('home.verTodas')}
             </button>
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

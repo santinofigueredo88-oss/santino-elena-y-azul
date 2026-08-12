@@ -6,11 +6,12 @@ import {
   textoSustituciones,
 } from '../lib/sustituciones.js'
 import { normalizarTexto } from '../lib/normalizar.js'
+import { useApp } from '../context/AppContext.jsx'
 
 const NIVEL = {
-  facil: { nombre: 'Fácil', emoji: '🙂' },
-  media: { nombre: 'Media', emoji: '😌' },
-  dificil: { nombre: 'Difícil', emoji: '🧑‍🍳' },
+  facil: { emoji: '🙂' },
+  media: { emoji: '😌' },
+  dificil: { emoji: '🧑‍🍳' },
 }
 
 function retardo() {
@@ -28,6 +29,8 @@ function ingredienteMencionado(receta, texto) {
 }
 
 export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar }) {
+  const { t, tN, idioma } = useApp()
+  const sep = idioma === 'en' ? ' or ' : ' o '
   const [mensajes, setMensajes] = useState([])
   const [escribiendo, setEscribiendo] = useState(false)
   const [paso, setPaso] = useState(-1)
@@ -80,12 +83,12 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
     const tengo = receta.ingredientes.filter(
       (ing) => BASICOS.has(ing.id) || set.has(ing.id)
     )
-    let texto = `¡Hola! 👨‍🍳 Soy tu guía para hacer *${receta.nombre}*.`
-    texto += `\n\nTenés ${tengo.length} de ${receta.ingredientes.length} ingredientes, faltan ${faltantes.length}.`
+    let texto = t('bot.saludo', { receta: receta.nombre })
+    texto += `\n\n${t('bot.tenesIng', { a: tengo.length, b: receta.ingredientes.length, c: faltantes.length })}`
     if (faltantes.length === 0) {
-      texto += '\n\n¡Estás listo para cocinar! ¿Arrancamos? 🚀'
+      texto += `\n\n${t('bot.listos')}`
     } else {
-      texto += '\n\nIgual podemos avanzar: te voy contando cada paso y te aviso cómo reemplazar lo que falte. 🔁'
+      texto += `\n\n${t('bot.podemosAvanzar')}`
     }
     const t = setTimeout(
       () => botDice(texto, { chips: chipsInicio() }),
@@ -96,12 +99,12 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
   }, [])
 
   function chipsInicio() {
-    return ['🚀 Empezar a cocinar', '📋 Ingredientes', '⚠️ Qué me falta', '🔁 Sustituciones']
+    return [t('bot.chipEmpezar'), t('bot.chipIngredientes'), t('bot.chipFalta'), t('bot.chipSustituciones')]
   }
   function chipsPasos(actual = paso) {
-    const base = ['▶️ Siguiente paso', '◀️ Paso anterior']
-    if (actual >= totalPasos - 1) base.push('✅ Terminé')
-    base.push('📋 Ingredientes', '🔁 Sustituciones')
+    const base = [t('bot.chipSiguiente'), t('bot.chipAnterior')]
+    if (actual >= totalPasos - 1) base.push(t('bot.chipTermine'))
+    base.push(t('bot.chipIngredientes'), t('bot.chipSustituciones'))
     return base
   }
 
@@ -109,7 +112,7 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
   const verIngredientes = () => {
     const set = new Set(idsIngredientes)
     const lineas = []
-    lineas.push(`📋 *Ingredientes* (para ${porciones} ${porciones === 1 ? 'persona' : 'personas'}):`)
+    lineas.push(t('bot.ingredientesTitulo', { n: porciones, pers: tN('bot.persona', 'bot.personas', porciones) }))
     for (const ing of receta.ingredientes) {
       const esc = escalarIngrediente(ing, receta.porciones, porciones)
       const falta = !BASICOS.has(ing.id) && !set.has(ing.id)
@@ -121,55 +124,58 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
 
   const verFaltantes = () => {
     if (faltantes.length === 0) {
-      return '¡Tenés TODOS los ingredientes! 🎉 Nada que comprar, nada que reemplazar. ¡A cocinar! 👨‍🍳'
+      return t('bot.todosLosIng')
     }
     const lista = faltantes.map((f) => `• ${nombreDeIngrediente(f.id)}`).join('\n')
-    const texto = `⚠️ Te faltan estos ${faltantes.length}:\n\n${lista}\n\n`
+    const texto = `${t('bot.faltan', { n: faltantes.length })}\n\n${lista}\n\n`
     const sustituciones = textoSustituciones(receta, idsIngredientes)
-    return texto + (sustituciones ?? 'Tip: podés improvisar con lo que tengas a mano, casi siempre funciona. 😉')
+    return texto + (sustituciones ?? t('bot.tipFaltante'))
   }
 
   const verSustituciones = () => {
     if (faltantes.length === 0) {
-      return '¡No te falta nada! 😄 No necesitás sustituciones. Igual, si algún día cambiás un ingrediente, decime y te doy ideas.'
+      return t('bot.noFaltaSust')
     }
     const sustituciones = textoSustituciones(receta, idsIngredientes)
     if (sustituciones) {
-      return `${sustituciones}\n\nVas a ver que el resultado queda igual de rico. 🙌`
+      return `${sustituciones}\n\n${t('bot.quedaRico')}`
     }
     const ejemplos = faltantes
       .slice(0, 2)
       .map((f) => {
         const opciones = SUSTITUCIONES[f.id]
         return opciones?.length
-          ? `${nombreDeIngrediente(f.id)}: se puede con ${opciones.slice(0, 2).map(nombreDeIngrediente).join(' o ')}`
+          ? t('bot.sePuedeCon', {
+              ing: nombreDeIngrediente(f.id),
+              opciones: opciones.slice(0, 2).map(nombreDeIngrediente).join(sep),
+            })
           : null
       })
       .filter(Boolean)
-    const base = 'No encontré un reemplazo directo entre lo que tenés ahora, pero acá van ideas:'
+    const base = t('bot.noEncontre')
     return ejemplos.length
       ? `${base}\n\n• ${ejemplos.join('\n• ')}`
-      : 'La cocina es experimentación: si te falta algo, probá con el ingrediente más parecido que tengas. Seguro sale rico igual. 😉'
+      : t('bot.experimentar')
   }
 
   const verTiempo = () => {
     const total = receta.tiempoMinutos
     const porPaso = Math.round(total / totalPasos)
-    return `⏱️ Esta receta lleva *${total} minutos* en total.\n\nSon ${totalPasos} pasos, más o menos ${porPaso} minutos por paso. ¡Sin apuro, la cocina espera! 🍳`
+    return `${t('bot.tiempo', { n: total })}\n\n${t('bot.tiempo2', { a: totalPasos, b: porPaso })}`
   }
 
   const verPorciones = () => {
-    return `👥 Esta receta es para *${receta.porciones} porciones* y la estás viendo en *${porciones}*.\n\nTodas las cantidades ya están recalculadas. Si querés cambiar el número, usá el ajustador arriba en la receta.`
+    return `${t('bot.porcionesResp', { a: receta.porciones, b: porciones })}\n\n${t('bot.porcionesResp2')}`
   }
 
   const verDificultad = () => {
     const n = NIVEL[receta.dificultad] ?? NIVEL.facil
     const tips = {
-      facil: '¡Tranqui, no hay pierde! Ideal para arrancar. 😌',
-      media: 'Es media: requiere un poquito de atención pero cualquiera la puede hacer. 💪',
-      dificil: 'Es de las elaboradas: tomátelo con calma, prepará todo antes de arrancar. 🧑‍🍳',
+      facil: t('bot.tipFacil'),
+      media: t('bot.tipMedia'),
+      dificil: t('bot.tipDificil'),
     }
-    return `${n.emoji} Dificultad: *${n.nombre}*.\n\n${tips[receta.dificultad] ?? tips.facil}`
+    return `${t('bot.dificultad', { emoji: n.emoji, nombre: t('dificultad.' + receta.dificultad) })}\n\n${tips[receta.dificultad] ?? tips.facil}`
   }
 
   const verPaso = (indice) => {
@@ -186,9 +192,10 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
   const avanzarPaso = () => {
     if (paso === -1) {
       if (faltantes.length > 0) {
-        botDice(`¡Vamos! 🚀\n\nAntes de arrancar: te faltan ${faltantes.length} ingrediente${faltantes.length === 1 ? '' : 's'}. ${textoSustituciones(receta, idsIngredientes) ?? 'Podés reemplazarlos o hacerlo sin drama.'}\n\nCuando estés listo, tocá "▶️ Siguiente paso".`, {
-          chips: ['▶️ Siguiente paso', '🔁 Sustituciones'],
-        })
+        botDice(
+          `${t('bot.vamos')}\n\n${tN('bot.antesDeArrancar1', 'bot.antesDeArrancar', faltantes.length)} ${textoSustituciones(receta, idsIngredientes) ?? t('bot.podesReemplazar')}\n\n${t('bot.cuandoListo')}`,
+          { chips: [t('bot.chipSiguiente'), t('bot.chipSustituciones')] }
+        )
       } else {
         verPaso(0)
       }
@@ -199,15 +206,15 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
     } else {
       setPaso(-1)
       botDice(
-        `¡Felicitaciones, terminaste todos los pasos! 🎉\n\nDejá reposar un minuto, serví y disfrutá tu ${receta.nombre.toLowerCase()}. ¡Buen provecho! 🍽️`,
-        { chips: ['🔄 Empezar de nuevo', '📋 Ingredientes', '🔁 Sustituciones'] }
+        `${t('bot.felicitaciones')}\n\n${t('bot.disfruta', { receta: receta.nombre.toLowerCase() })}`,
+        { chips: [t('bot.chipDeNuevo'), t('bot.chipIngredientes'), t('bot.chipSustituciones')] }
       )
     }
   }
 
   const retrocederPaso = () => {
     if (paso <= 0) {
-      botDice('Estás en el primer paso, no hay más atrás. 😊', { chips: chipsPasos() })
+      botDice(t('bot.primerPaso'), { chips: chipsPasos() })
       return
     }
     verPaso(paso - 1)
@@ -215,12 +222,12 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
 
   const repetirPaso = () => {
     if (paso === -1) {
-      botDice('Todavía no arrancamos con los pasos. Decime "Empezar a cocinar" cuando quieras. 🚀', {
+      botDice(t('bot.noArrancamos'), {
         chips: chipsInicio(),
       })
       return
     }
-    botDice(`Claro, te lo repito:\n\n${receta.pasos[paso]}`, {
+    botDice(`${t('bot.repito')}\n\n${receta.pasos[paso]}`, {
       tipo: 'paso',
       numero: paso + 1,
       total: totalPasos,
@@ -231,13 +238,15 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
   const finalizar = () => {
     setPaso(-1)
     botDice(
-      '¡Buenísimo! 💪 Espero que haya salido riquísimo.\n\nTip: si te sobró, se guarda perfecto en la heladera. ¡Nos vemos en la próxima receta! 👋',
-      { chips: ['🔄 Empezar de nuevo', '📋 Ingredientes', '🔁 Sustituciones'] }
+      `${t('bot.buenisimo')}\n\n${t('bot.tipSobro')}`,
+      { chips: [t('bot.chipDeNuevo'), t('bot.chipIngredientes'), t('bot.chipSustituciones')] }
     )
   }
 
   const ayuda = () => {
-    return 'Puedo ayudarte con:\n\n• 🚀 "Empezar a cocinar" → te guío paso a paso\n• 📋 "Ingredientes" → te los listo con cantidades\n• ⚠️ "Qué me falta" → faltantes y consejos\n• 🔁 "Sustituciones" → reemplazos con lo que tenés\n• ⏱️ "Cuánto tarda" / 👥 "Porciones" / 🙂 "Dificultad"\n• Decime "no tengo X" y te propongo un reemplazo'
+    return ['bot.ayuda', 'bot.ayuda1', 'bot.ayuda2', 'bot.ayuda3', 'bot.ayuda4', 'bot.ayuda5', 'bot.ayuda6']
+      .map((clave, i) => (i === 0 ? t(clave) : `• ${t(clave)}`))
+      .join('\n')
   }
 
   // ---------- Procesador de intenciones ----------
@@ -246,13 +255,23 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
     if (!n) return
 
     // Paso N
-    const pasoN = n.match(/paso\s+(\d{1,2})/)
+    const pasoN = n.match(/(paso|step)\s+(\d{1,2})/)
     if (pasoN) {
-      verPaso(parseInt(pasoN[1], 10) - 1)
+      verPaso(parseInt(pasoN[2], 10) - 1)
       return
     }
     // "no tengo X" → sustitución específica
-    if (n.includes('no tengo') || n.includes('no teng') || n.includes('me falta') || n.includes('sin ')) {
+    if (
+      n.includes('no tengo') ||
+      n.includes('no teng') ||
+      n.includes('me falta') ||
+      n.includes('sin ') ||
+      n.includes("i don't have") ||
+      n.includes('i dont have') ||
+      n.includes("i'm missing") ||
+      n.includes('im missing') ||
+      n.includes('without ')
+    ) {
       const id = ingredienteMencionado(receta, texto)
       if (id) {
         const opciones = SUSTITUCIONES[id] ?? []
@@ -261,17 +280,17 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
         const nombre = nombreDeIngrediente(id)
         if (disponibles.length > 0) {
           botDice(
-            `¡No hay problema con ${nombre.toLowerCase()}! Podés usar *${nombreDeIngrediente(disponibles[0])}* que ya tenés en casa. 🙌`,
+            t('bot.noProblema', { ing: nombre.toLowerCase(), reemplazo: nombreDeIngrediente(disponibles[0]) }),
             { chips: chipsPasos() }
           )
         } else if (opciones.length > 0) {
           botDice(
-            `Para reemplazar ${nombre.toLowerCase()} podrías usar ${opciones.map(nombreDeIngrediente).join(' o ')}. Si tenés alguno, avisame y seguimos. 😉`,
+            t('bot.paraReemplazar', { ing: nombre.toLowerCase(), opciones: opciones.map(nombreDeIngrediente).join(sep) }),
             { chips: chipsPasos() }
           )
         } else {
           botDice(
-            `Tranqui, se puede hacer sin ${nombre.toLowerCase()} o con lo más parecido que tengas. La cocina es así: improvisar. 😄`,
+            t('bot.tranqui', { ing: nombre.toLowerCase() }),
             { chips: chipsPasos() }
           )
         }
@@ -279,31 +298,31 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
       }
     }
     // Intenciones
-    if (/(hola|buenas|buen dia|buenas tardes|ey|hey|que tal)/.test(n)) {
-      botDice(`¡Hola de nuevo! 👋 ¿Arrancamos con *${receta.nombre}* o querés que te cuente algo de la receta?`, {
+    if (/(hola|buenas|buen dia|buenas tardes|ey|hey|que tal|hello|\bhi\b)/.test(n)) {
+      botDice(t('bot.holaDeNuevo', { receta: receta.nombre }), {
         chips: chipsInicio(),
       })
-    } else if (/(empezar|arrancar|cocinar|dale|vamos|adelante|siguiente|continuar|next|si)/.test(n)) {
+    } else if (/(empezar|arrancar|cocinar|dale|vamos|adelante|siguiente|continuar|next|si|start)/.test(n)) {
       avanzarPaso()
-    } else if (/(anterior|atras|volver|retroceder|anterior paso)/.test(n)) {
+    } else if (/(anterior|atras|volver|retroceder|anterior paso|back|previous)/.test(n)) {
       retrocederPaso()
-    } else if (/(repetir|otra vez|otravez|de nuevo|nuevamente)/.test(n)) {
+    } else if (/(repetir|otra vez|otravez|de nuevo|nuevamente|repeat|again)/.test(n)) {
       repetirPaso()
-    } else if (/(ingrediente|que lleva|lista de compras)/.test(n)) {
+    } else if (/(ingrediente|que lleva|lista de compras|ingredient)/.test(n)) {
       botDice(verIngredientes(), { chips: chipsPasos() })
-    } else if (/(falta|faltante|faltan|faltaria|que me falta)/.test(n)) {
+    } else if (/(falta|faltante|faltan|faltaria|que me falta|missing)/.test(n)) {
       botDice(verFaltantes(), { chips: chipsPasos() })
-    } else if (/(sustitu|reempla|cambio|cambiar|alternativa|en vez de|por cual|por que reemplazo|puedo usar)/.test(n)) {
+    } else if (/(sustitu|reempla|cambio|cambiar|alternativa|en vez de|por cual|por que reemplazo|puedo usar|substitut|swap)/.test(n)) {
       botDice(verSustituciones(), { chips: chipsPasos() })
-    } else if (/(tiempo|cuanto tarda|cuanto dura|dura|tarda|demora|minutos)/.test(n)) {
+    } else if (/(tiempo|cuanto tarda|cuanto dura|dura|tarda|demora|minutos|how long|\btime\b)/.test(n)) {
       botDice(verTiempo(), { chips: chipsPasos() })
-    } else if (/(porcion|personas|cantidad|para cuantos|racion)/.test(n)) {
+    } else if (/(porcion|personas|cantidad|para cuantos|racion|serving|servings)/.test(n)) {
       botDice(verPorciones(), { chips: chipsPasos() })
-    } else if (/(dificultad|dificil|facil|media|complicado|sencillo)/.test(n)) {
+    } else if (/(dificultad|dificil|facil|media|complicado|sencillo|difficult|easy|hard|medium)/.test(n)) {
       botDice(verDificultad(), { chips: chipsPasos() })
-    } else if (/(gracias|listo|termine|termine|terminado|fin|completo|me salio)/.test(n)) {
+    } else if (/(gracias|listo|termine|terminado|fin|completo|me salio|thanks|done|finished)/.test(n)) {
       finalizar()
-    } else if (/(ayuda|que podes|que sabes|opciones|ayudame|help)/.test(n)) {
+    } else if (/(ayuda|que podes|que sabes|opciones|ayudame|help|options)/.test(n)) {
       botDice(ayuda(), { chips: chipsInicio() })
     } else {
       const id = ingredienteMencionado(receta, texto)
@@ -311,17 +330,14 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
         const opciones = SUSTITUCIONES[id] ?? []
         if (opciones.length) {
           botDice(
-            `Sobre ${nombreDeIngrediente(id).toLowerCase()}: si no lo tenés, podés usar ${opciones.map(nombreDeIngrediente).join(' o ')}. 😉`,
+            t('bot.sobreIng', { ing: nombreDeIngrediente(id).toLowerCase(), opciones: opciones.map(nombreDeIngrediente).join(sep) }),
             { chips: chipsPasos() }
           )
         } else {
-          botDice(`¡Buena pregunta! Sobre ${nombreDeIngrediente(id).toLowerCase()}: lo más fácil es reemplazarlo por el ingrediente más parecido que tengas en casa. ✨`, { chips: chipsPasos() })
+          botDice(t('bot.buenaPregunta', { ing: nombreDeIngrediente(id).toLowerCase() }), { chips: chipsPasos() })
         }
       } else {
-        botDice(
-          'No entendí del todo, perdón 🙈. Podés tocarme una de estas opciones o escribirme algo como "no tengo tomate":',
-          { chips: chipsInicio() }
-        )
+        botDice(t('bot.noEntendi'), { chips: chipsInicio() })
       }
     }
   }
@@ -352,14 +368,14 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
           <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-green-600 bg-green-400" aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-black text-white">Chef Guía · {receta.nombre}</p>
+          <p className="truncate text-sm font-black text-white">{t('bot.chefGuia')} · {receta.nombre}</p>
           <p className="text-xs font-bold text-green-100">
-            {escribiendo ? 'escribiendo…' : paso >= 0 ? `Paso ${paso + 1} de ${totalPasos}` : 'en línea · ayudándote a cocinar'}
+            {escribiendo ? t('bot.escribiendo') : paso >= 0 ? t('bot.pasoDe', { a: paso + 1, b: totalPasos }) : t('bot.enLinea')}
           </p>
         </div>
         <button
           onClick={onCerrar}
-          aria-label="Cerrar el guía de cocina"
+          aria-label={t('bot.cerrarAria')}
           className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/15 text-sm font-black text-white transition-colors hover:bg-white/30"
         >
           ✕
@@ -385,7 +401,7 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
         className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4"
         role="log"
         aria-live="polite"
-        aria-label="Conversación con el guía de cocina"
+        aria-label={t('bot.conversacionAria')}
       >
         {mensajes.map((m) =>
           m.autor === 'user' ? (
@@ -401,7 +417,7 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
                   {m.numero}
                 </span>
                 <span className="text-xs font-black uppercase tracking-wide text-stone-400">
-                  Paso {m.numero} de {m.total}
+                  {t('bot.pasoLabel', { a: m.numero, b: m.total })}
                 </span>
               </div>
               <div className="mt-1.5 ml-4 max-w-[85%] rounded-2xl rounded-tl-md bg-white px-4 py-3 text-[15px] font-semibold leading-relaxed text-stone-800 shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-800 dark:text-stone-100 dark:ring-stone-700">
@@ -463,13 +479,13 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
         <input
           id="cocina-bot-input"
           type="text"
-          placeholder='Escribí… ej: "no tengo tomate"'
-          aria-label="Escribí tu mensaje al guía"
+          placeholder={t('bot.placeholder')}
+          aria-label={t('bot.inputAria')}
           className="w-full flex-1 rounded-2xl border-2 border-stone-200 bg-crema-50 px-4 py-2.5 text-[15px] font-semibold text-stone-800 placeholder:text-stone-400 focus:border-green-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
         />
         <button
           type="submit"
-          aria-label="Enviar mensaje"
+          aria-label={t('bot.enviarAria')}
           className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-green-600 text-lg text-white shadow-md shadow-green-600/25 transition-all hover:bg-green-500 active:scale-90"
         >
           ➤

@@ -109,6 +109,30 @@ body {
   background: transparent;
 }
 
+/* ── Modo oscuro: controles nativos + transición suave ────────── */
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+/* Al togglear el tema, una clase breve anima la transición de colores.
+   Respetamos prefers-reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html.tema-animado,
+  html.tema-animado *,
+  html.tema-animado *::before,
+  html.tema-animado *::after {
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease,
+      fill 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+}
+
 /* Botón primario con brillo suave (verde) */
 .btn-primary {
   @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-green-600 px-6 py-3.5 text-lg font-extrabold text-white shadow-lg shadow-green-600/25 transition-all duration-200 hover:bg-green-500 hover:shadow-xl hover:shadow-green-500/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-lg;

@@ -15,30 +15,31 @@ import RecipeImage from './RecipeImage.jsx'
 import CocinaBot from './CocinaBot.jsx'
 
 const NIVEL_DIFICULTAD = {
-  facil: { nombre: 'Fácil', emoji: '🙂' },
-  media: { nombre: 'Media', emoji: '😌' },
-  dificil: { nombre: 'Difícil', emoji: '🧑‍🍳' },
+  facil: { emoji: '🙂' },
+  media: { emoji: '😌' },
+  dificil: { emoji: '🧑‍🍳' },
 }
 
 function Stepper({ porciones, setPorciones }) {
+  const { t } = useApp()
   return (
     <div className="inline-flex items-center gap-1 rounded-2xl bg-crema-100 p-1 dark:bg-stone-800">
       <button
         onClick={() => setPorciones((p) => Math.max(1, p - 1))}
         disabled={porciones <= 1}
-        aria-label="Menos porciones"
+        aria-label={t('modal.menosPorciones')}
         className="grid h-10 w-10 place-items-center rounded-xl bg-white text-lg font-black text-stone-700 shadow-sm transition-all hover:bg-green-100 disabled:opacity-40 dark:bg-stone-700 dark:text-white dark:hover:bg-stone-600"
       >
         −
       </button>
       <span className="min-w-16 px-2 text-center">
         <span className="block text-lg font-black leading-none text-stone-900 dark:text-white">{porciones}</span>
-        <span className="block text-[10px] font-bold uppercase text-stone-400">porc.</span>
+        <span className="block text-[10px] font-bold uppercase text-stone-400">{t('modal.porc')}</span>
       </span>
       <button
         onClick={() => setPorciones((p) => Math.min(12, p + 1))}
         disabled={porciones >= 12}
-        aria-label="Más porciones"
+        aria-label={t('modal.masPorciones')}
         className="grid h-10 w-10 place-items-center rounded-xl bg-white text-lg font-black text-stone-700 shadow-sm transition-all hover:bg-green-100 disabled:opacity-40 dark:bg-stone-700 dark:text-white dark:hover:bg-stone-600"
       >
         +
@@ -55,6 +56,8 @@ export default function RecipeModal() {
     esFavorito,
     toggleFavorito,
     agregarFaltantesALista,
+    t,
+    tN,
   } = useApp()
 
   const [porciones, setPorciones] = useState(recetaActiva?.porciones ?? 4)
@@ -117,7 +120,7 @@ export default function RecipeModal() {
       className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
       role="dialog"
       aria-modal="true"
-      aria-label={`Receta: ${receta.nombre}`}
+      aria-label={t('modal.recetaAria', { nombre: receta.nombre })}
     >
       {/* Fondo */}
       <button
@@ -125,7 +128,7 @@ export default function RecipeModal() {
           if (botAbierto) setBotAbierto(false)
           else cerrarReceta()
         }}
-        aria-label="Cerrar detalle de receta"
+        aria-label={t('modal.cerrarDetalle')}
         className="absolute inset-0 bg-stone-950/60 backdrop-blur-sm animate-fade-in"
       />
 
@@ -157,7 +160,7 @@ export default function RecipeModal() {
                 if (botAbierto) setBotAbierto(false)
                 else cerrarReceta()
               }}
-              aria-label="Cerrar"
+              aria-label={t('modal.cerrar')}
               autoFocus
               className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-lg font-black text-stone-700 shadow-md backdrop-blur transition-all hover:scale-110 hover:bg-white dark:bg-stone-900/85 dark:text-stone-200"
             >
@@ -166,7 +169,7 @@ export default function RecipeModal() {
             <button
               onClick={() => toggleFavorito(receta.id)}
               aria-pressed={fav}
-              aria-label={fav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+              aria-label={fav ? t('modal.quitarFav') : t('modal.agregarFav')}
               className="absolute left-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-lg shadow-md backdrop-blur transition-all hover:scale-110 active:scale-90 dark:bg-stone-900/85"
             >
               {fav ? '❤️' : '🤍'}
@@ -181,22 +184,22 @@ export default function RecipeModal() {
                   ⏱️ {receta.tiempoMinutos} min
                 </span>
                 <span className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-extrabold text-white backdrop-blur">
-                  👥 {receta.porciones} porciones
+                  {tN('modal.porcion', 'modal.porciones', receta.porciones)}
                 </span>
                 <span className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-extrabold text-white backdrop-blur">
-                  {nivel.emoji} {nivel.nombre}
+                  {nivel.emoji} {t('dificultad.' + receta.dificultad)}
                 </span>
                 <span className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-extrabold text-white backdrop-blur">
-                  {tipo?.emoji} {tipo?.nombre}
+                  {tipo?.emoji} {tipo ? t('tipo.' + tipo.id, null, tipo.nombre) : ''}
                 </span>
               </div>
               {faltantes === 0 ? (
                 <span className="mt-3 inline-block rounded-full bg-green-500 px-4 py-1.5 text-sm font-extrabold text-white shadow-md">
-                  ✅ ¡Tenés todos los ingredientes!
+                  {t('modal.tenesTodos')}
                 </span>
               ) : (
                 <span className="mt-3 inline-block rounded-full bg-lime-600 px-4 py-1.5 text-sm font-extrabold text-white shadow-md">
-                  ⚠️ Te faltan {faltantes === 1 ? '1 ingrediente' : `${faltantes} ingredientes`}
+                  {tN('modal.teFaltan1', 'modal.teFaltan', faltantes)}
                 </span>
               )}
             </div>
@@ -212,9 +215,9 @@ export default function RecipeModal() {
                 🤖
               </span>
               <span className="text-left leading-tight">
-                <span className="block text-base">Guíame paso a paso</span>
+                <span className="block text-base">{t('modal.guiame')}</span>
                 <span className="block text-xs font-bold text-green-100">
-                  Te acompaño a cocinar y reemplazo lo que te falte
+                  {t('modal.guiameSub')}
                 </span>
               </span>
               <span aria-hidden="true" className="ml-auto text-lg transition-transform group-hover:translate-x-1">→</span>
@@ -223,9 +226,9 @@ export default function RecipeModal() {
             {/* Porciones */}
             <div className="mb-5 flex flex-col items-start gap-2 rounded-2xl bg-crema-50 p-4 dark:bg-stone-800 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-extrabold text-stone-900 dark:text-white">👨‍👩‍👧‍👦 Ajustar porciones</p>
+                <p className="font-extrabold text-stone-900 dark:text-white">{t('modal.ajustar')}</p>
                 <p className="text-sm font-semibold text-stone-500 dark:text-stone-400">
-                  Las cantidades se recalculan solas.
+                  {t('modal.ajustarSub')}
                 </p>
               </div>
               <Stepper porciones={porciones} setPorciones={setPorciones} />
@@ -242,15 +245,15 @@ export default function RecipeModal() {
                 }}
                 className="mb-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-green-100 px-4 py-3.5 font-extrabold text-green-800 transition-all hover:bg-green-200 dark:bg-green-900/50 dark:text-green-200 dark:hover:bg-green-900"
               >
-                🛒 Agregar los {faltantesDetalle.length} faltantes a la lista de compras
+                {t('modal.agregarFaltantes', { n: faltantesDetalle.length })}
               </button>
             )}
 
             {/* Ingredientes */}
             <h3 className="text-xl font-black text-stone-900 dark:text-white">
-              Ingredientes{' '}
+              {t('modal.ingredientes')}{' '}
               <span className="text-sm font-bold text-stone-400">
-                (para {porciones} {porciones === 1 ? 'persona' : 'personas'})
+                {tN('modal.paraPersona', 'modal.paraPersonas', porciones)}
               </span>
             </h3>
             <ul className="mt-3 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
@@ -269,11 +272,11 @@ export default function RecipeModal() {
                   >
                     <span aria-hidden="true">{falta ? '❌' : '✅'}</span>
                     <span className="min-w-0 flex-1">
-                      {formatearCantidad(esc.cantidad)} {esc.unidad} de{' '}
+                      {formatearCantidad(esc.cantidad)} {esc.unidad} {t('modal.de')}{' '}
                       <strong>{nombreDeIngrediente(ing.id).toLowerCase()}</strong>
                       {esBasico && (
                         <span className="ml-1.5 rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-black uppercase text-stone-500 dark:bg-stone-700 dark:text-stone-300">
-                          siempre en casa
+                          {t('modal.siempreEnCasa')}
                         </span>
                       )}
                     </span>
@@ -283,7 +286,7 @@ export default function RecipeModal() {
             </ul>
 
             {/* Pasos */}
-            <h3 className="mt-7 text-xl font-black text-stone-900 dark:text-white">Pasos 👨‍🍳</h3>
+            <h3 className="mt-7 text-xl font-black text-stone-900 dark:text-white">{t('modal.pasos')}</h3>
             <ol className="mt-3 flex flex-col gap-3">
               {receta.pasos.map((paso, i) => (
                 <li key={i} className="flex gap-3">
@@ -310,13 +313,13 @@ export default function RecipeModal() {
                 }
                 className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 py-3.5 font-extrabold text-white shadow-md shadow-green-600/25 transition-all hover:bg-green-500 active:scale-[0.98]"
               >
-                💬 Compartir por WhatsApp
+                {t('modal.compartir')}
               </button>
               <button
                 onClick={cerrarReceta}
                 className="flex-1 rounded-2xl bg-stone-100 px-5 py-3.5 font-extrabold text-stone-700 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-200 dark:hover:bg-stone-700"
               >
-                Cerrar
+                {t('modal.cerrar')}
               </button>
             </div>
           </div>

@@ -2,12 +2,14 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { leerStorage, escribirStorage } from '../lib/storage.js'
 import { resolverIngrediente, yaExiste } from '../lib/normalizar.js'
 import { nombreDeIngrediente } from '../data/ingredientes.js'
+import { traducir } from '../i18n.js'
 
 const CLAVES = {
   ingredientes: 'que-cocino:ingredientes',
   favoritos: 'que-cocino:favoritos',
   lista: 'que-cocino:lista',
   tema: 'que-cocino:tema',
+  idioma: 'que-cocino:idioma',
 }
 
 const AppContext = createContext(null)
@@ -25,9 +27,18 @@ export function AppProvider({ children }) {
   const [listaCompras, setListaCompras] = useState(() =>
     leerStorage(CLAVES.lista, [])
   )
-  // Tema: 'claro' | 'oscuro'
-  const [tema, setTema] = useState(() =>
-    leerStorage(CLAVES.tema, 'claro')
+  // Tema: 'claro' | 'oscuro'. Sin preferencia guardada, sigue al sistema.
+  const [tema, setTema] = useState(() => {
+    const guardado = leerStorage(CLAVES.tema, null)
+    if (guardado === 'claro' || guardado === 'oscuro') return guardado
+    return typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-color-scheme: dark)').matches
+      ? 'oscuro'
+      : 'claro'
+  })
+  // Idioma: 'es' | 'en'
+  const [idioma, setIdioma] = useState(() =>
+    leerStorage(CLAVES.idioma, 'es')
   )
   // Navegación
   const [vista, setVista] = useState('inicio') // inicio | resultados | lista | favoritos
@@ -38,17 +49,46 @@ export function AppProvider({ children }) {
   useEffect(() => escribirStorage(CLAVES.favoritos, favoritos), [favoritos])
   useEffect(() => escribirStorage(CLAVES.lista, listaCompras), [listaCompras])
   useEffect(() => escribirStorage(CLAVES.tema, tema), [tema])
+  useEffect(() => escribirStorage(CLAVES.idioma, idioma), [idioma])
 
   // ---------- Tema ----------
   useEffect(() => {
     const root = document.documentElement
-    if (tema === 'oscuro') root.classList.add('dark')
-    else root.classList.remove('dark')
+    root.classList.toggle('dark', tema === 'oscuro')
+    // Barra del navegador (mobile) acorde al tema
+    const meta = document.querySelector('meta[name="theme-color"]')
+    if (meta) {
+      meta.setAttribute('content', tema === 'oscuro' ? '#0c0a09' : '#16a34a')
+    }
   }, [tema])
 
   const toggleTema = useCallback(() => {
+    // Anima la transición de colores solo durante el cambio
+    const root = document.documentElement
+    root.classList.add('tema-animado')
+    setTimeout(() => root.classList.remove('tema-animado'), 400)
     setTema((t) => (t === 'oscuro' ? 'claro' : 'oscuro'))
   }, [])
+
+  // ---------- Idioma ----------
+  useEffect(() => {
+    document.documentElement.lang = idioma === 'en' ? 'en' : 'es'
+  }, [idioma])
+
+  const cambiarIdioma = useCallback((nuevo) => setIdioma(nuevo), [])
+
+  // Traducción: t('clave', { params }, fallback)
+  const t = useCallback(
+    (clave, params, fallback) => traducir(idioma, clave, params, fallback),
+    [idioma]
+  )
+
+  // Plural: tN('claveSingular', 'clavePlural', n, params)
+  const tN = useCallback(
+    (singular, plural, n, params) =>
+      traducir(idioma, n === 1 ? singular : plural, { ...params, n }),
+    [idioma]
+  )
 
   // ---------- Ingredientes ----------
   const agregarIngrediente = useCallback(
@@ -146,6 +186,10 @@ export function AppProvider({ children }) {
       quitarComprados,
       tema,
       toggleTema,
+      idioma,
+      cambiarIdioma,
+      t,
+      tN,
       vista,
       irA,
       recetaActiva,
@@ -169,6 +213,10 @@ export function AppProvider({ children }) {
       quitarComprados,
       tema,
       toggleTema,
+      idioma,
+      cambiarIdioma,
+      t,
+      tN,
       vista,
       irA,
       recetaActiva,

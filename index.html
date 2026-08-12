@@ -8,6 +8,18 @@
       content="¿Qué Cocino? Ingresá los ingredientes que tenés y descubrí recetas fáciles para hacer con lo que hay en tu heladera."
     />
     <meta name="theme-color" content="#16a34a" />
+    <script>
+      // Aplica el modo oscuro antes de que React monte (evita el flash)
+      ;(function () {
+        try {
+          var guardado = JSON.parse(localStorage.getItem('que-cocino:tema'))
+          var oscuro =
+            guardado === 'oscuro' ||
+            (!guardado && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          if (oscuro) document.documentElement.classList.add('dark')
+        } catch (e) {}
+      })()
+    </script>
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍🍳</text></svg>"

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { imagenDeReceta } from '../data/imagenes.js'
 import { CATEGORIA_POR_ID } from '../data/ingredientes.js'
+import { useApp } from '../context/AppContext.jsx'
 
 /**
  * Imagen de una receta: usa la foto real (Unsplash) y si no carga (sin red o
@@ -13,6 +14,7 @@ export default function RecipeImage({
   emojiClassName = '',
   eager = false,
 }) {
+  const { t } = useApp()
   const [fallo, setFallo] = useState(false)
   const url = imagenDeReceta(receta)
 
@@ -40,7 +42,7 @@ export default function RecipeImage({
   return (
     <img
       src={url}
-      alt={`Foto de ${receta.nombre}`}
+      alt={t('imagen.alt', { nombre: receta.nombre })}
       loading={eager ? 'eager' : 'lazy'}
       onError={() => setFallo(true)}
       className={`object-cover ${imgClassName || className}`}

@@ -5,7 +5,7 @@ import { calcularFaltantes } from '../lib/matching.js'
 import RecipeCard from './RecipeCard.jsx'
 
 export default function FavoritesView() {
-  const { favoritos, abrirReceta, idsIngredientes, irA } = useApp()
+  const { favoritos, abrirReceta, idsIngredientes, irA, t, tN } = useApp()
 
   const idsUsuario = useMemo(
     () => new Set(idsIngredientes),
@@ -29,13 +29,13 @@ export default function FavoritesView() {
       <div className="mx-auto max-w-xl px-4 py-20 text-center animate-fade-up">
         <span className="text-7xl" role="img" aria-hidden="true">💛</span>
         <h2 className="mt-4 text-3xl font-black text-stone-900 dark:text-white">
-          Todavía no tenés favoritos
+          {t('favs.vacio')}
         </h2>
         <p className="mt-2 text-lg font-semibold text-stone-500 dark:text-stone-400">
-          Tocá el corazón <span aria-hidden="true">🤍</span> en cualquier receta para guardarla acá.
+          {t('favs.vacioSub')}
         </p>
         <button onClick={() => irA('inicio')} className="btn-primary mt-6">
-          🏠 Ir al inicio
+          {t('resultados.irInicio')}
         </button>
       </div>
     )
@@ -45,10 +45,10 @@ export default function FavoritesView() {
     <div className="mx-auto max-w-6xl px-4 pb-20">
       <div className="py-8">
         <h1 className="font-display text-3xl font-black tracking-tight text-stone-900 dark:text-white sm:text-4xl">
-          Tus recetas favoritas
+          {t('favs.titulo')}
         </h1>
         <p className="mt-1 text-base font-semibold text-stone-500 dark:text-stone-400">
-          {favoritas.length} receta{favoritas.length === 1 ? '' : 's'} guardada{favoritas.length === 1 ? '' : 's'}
+          {tN('favs.n1', 'favs.n', favoritas.length)}
         </p>
       </div>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

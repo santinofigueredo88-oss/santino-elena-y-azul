@@ -90,11 +90,11 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
     } else {
       texto += `\n\n${t('bot.podemosAvanzar')}`
     }
-    const t = setTimeout(
+    const timeout = setTimeout(
       () => botDice(texto, { chips: chipsInicio() }),
       600
     )
-    return () => clearTimeout(t)
+    return () => clearTimeout(timeout)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

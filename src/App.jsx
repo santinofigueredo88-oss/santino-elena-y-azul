@@ -25,7 +25,8 @@ function Contenido() {
   const { vista, recetaActiva } = useApp()
 
   return (
-    <div className="flex min-h-screen flex-col">
+    // En pantalla se oculta la vista imprimible; al imprimir pasa al revés
+    <div className="flex min-h-screen flex-col print:hidden">
       <Header />
       <main className="flex-1">
         {vista === 'inicio' && <HomeView />}

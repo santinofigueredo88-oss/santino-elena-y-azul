@@ -44,6 +44,29 @@ export function AppProvider({ children }) {
   const [vista, setVista] = useState('inicio') // inicio | resultados | lista | favoritos
   const [recetaActiva, setRecetaActiva] = useState(null) // modal de detalle
 
+  // ---------- Carga desde link (?ing=papa,tomate) ----------
+  // Al abrir un link compartido, cargamos esos ingredientes (sin pisar los
+  // que ya tenía en localStorage), limpiamos la URL y vamos directo a resultados.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const raw = params.get('ing')
+    if (!raw) return
+    const ids = raw
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+    if (ids.length === 0) return
+    setIngredientes((prev) => {
+      const vistos = new Set(prev.map((i) => i.id))
+      const nuevos = ids
+        .map((id) => resolverIngrediente(id))
+        .filter((r) => r && !vistos.has(r.id))
+      return nuevos.length > 0 ? [...prev, ...nuevos] : prev
+    })
+    setVista('resultados')
+    window.history.replaceState(null, '', window.location.pathname)
+  }, [])
+
   // ---------- Persistencia ----------
   useEffect(() => escribirStorage(CLAVES.ingredientes, ingredientes), [ingredientes])
   useEffect(() => escribirStorage(CLAVES.favoritos, favoritos), [favoritos])

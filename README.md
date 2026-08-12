@@ -25,13 +25,18 @@ npm run preview
 
 - **Carga de ingredientes**: input con autocompletado (sin problemas de
   mayúsculas, tildes, singular/plural o sinónimos: "tomates" → Tomate),
-  botones rápidos agrupados por categoría (Lácteos, Frutas, Verduras, Carnes,
-  Fiambres, Almacén, Condimentos), chips removibles.
+  navegación por **teclado** (↑/↓ para elegir, Enter para agregar, Esc para
+  cerrar), podés **agregar varios a la vez** separados por comas
+  ("papa, tomate, cebolla"), botones rápidos agrupados por categoría (Lácteos,
+  Frutas, Verduras, Carnes, Fiambres, Almacén, Condimentos) y chips removibles.
+- **Link compartible con tus ingredientes**: con un toque copiás (o mandás por
+  WhatsApp) un link tipo `?ing=papa,tomate`; quien lo abre ve la app con esos
+  ingredientes ya cargados y directo a los resultados.
 - **Motor de match**: recetas 100% primero, luego las que faltan 1 y 2
   ingredientes (menos faltantes = más arriba), y una sección colapsada
   "Explorá más recetas" para el resto. Los condimentos básicos (sal, aceite,
   agua, pimienta, etc.) se asumen siempre disponibles y no cuentan como faltantes.
-- **Fotos reales en cada receta**: las 60 recetas tienen foto (Unsplash,
+- **Fotos reales en cada receta**: las 98 recetas tienen foto (Unsplash,
   URLs verificadas en `src/data/imagenes.js`), con un fallback ilustrado
   (gradiente + emoji) si la imagen no carga.
 - **🤖 Chef Guía (bot paso a paso)**: en cada receta, un chat que te guía
@@ -43,7 +48,10 @@ npm run preview
 - **Resultados con filtros**: por tipo de comida, tiempo de preparación y dificultad.
 - **Detalle de receta**: modal con foto hero, ingredientes (marca en verde ✅ lo
   que tenés y en rojo ❌ lo que te falta), **ajustador de porciones** que
-  recalcula cantidades, pasos numerados.
+  recalcula cantidades, pasos numerados, **imprimir / guardar en PDF** 🖨️ con
+  una vista de impresión limpia y un **temporizador de cocina** ⏱️ (presets,
+  pausa, reinicio y alarma sonora).
+- **Receta al azar**: botón 🎲 que abre una receta sorpresa al instante.
 - **Lista de compras**: agregá de un toque los faltantes de una receta, con checklist.
 - **Favoritos** ❤️ y **compartir por WhatsApp** 💬 (texto con ingredientes y pasos).
 - **Modo oscuro** 🌙 persistente y diseño responsive cálido, con tipografía
@@ -86,6 +94,7 @@ src/
 │   ├── ResultsView.jsx   # Resultados con filtros
 │   ├── RecipeCard.jsx    # Tarjeta reutilizable
 │   ├── RecipeModal.jsx   # Detalle de receta
+│   ├── CocinaTimer.jsx   # Temporizador de cocina
 │   ├── ShoppingListView.jsx
 │   └── FavoritesView.jsx
 └── App.jsx

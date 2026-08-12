@@ -1,6 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useApp } from '../context/AppContext.jsx'
 import { RECETAS, TIPOS_DE_COMIDA } from '../data/recetas.js'
+import { INGREDIENTE_POR_ID, nombreDeIngrediente } from '../data/ingredientes.js'
+import { normalizarTexto } from '../lib/normalizar.js'
 import {
   clasificarRecetas,
   agruparCasi,
@@ -98,6 +100,7 @@ export default function ResultsView() {
     dificultad: null,
     soloFavoritos: false,
   })
+  const [busqueda, setBusqueda] = useState('')
 
   const idsUsuario = useMemo(() => new Set(idsIngredientes), [idsIngredientes])
 
@@ -109,12 +112,27 @@ export default function ResultsView() {
 
   const [verExplorar, setVerExplorar] = useState(false)
 
+  // Búsqueda por nombre de receta o por ingredientes (con sinónimos)
+  const q = useMemo(() => normalizarTexto(busqueda), [busqueda])
+  const coincideBusqueda = useCallback(
+    (receta) => {
+      if (!q) return true
+      if (normalizarTexto(receta.nombre).includes(q)) return true
+      return receta.ingredientes.some((ing) => {
+        const conocido = INGREDIENTE_POR_ID[ing.id]
+        const nombres = [ing.id, nombreDeIngrediente(ing.id), ...(conocido?.sinonimos ?? [])]
+        return nombres.some((n) => normalizarTexto(n).includes(q))
+      })
+    },
+    [q]
+  )
+
   const filtrosConFavs = { ...filtros, favoritos }
 
-  const completasF = aplicarFiltros(completas, filtrosConFavs)
-  const unoF = aplicarFiltros(uno, filtrosConFavs)
-  const dosF = aplicarFiltros(dos, filtrosConFavs)
-  const explorarF = aplicarFiltros(explorar, filtrosConFavs)
+  const completasF = aplicarFiltros(completas, filtrosConFavs).filter(({ receta }) => coincideBusqueda(receta))
+  const unoF = aplicarFiltros(uno, filtrosConFavs).filter(({ receta }) => coincideBusqueda(receta))
+  const dosF = aplicarFiltros(dos, filtrosConFavs).filter(({ receta }) => coincideBusqueda(receta))
+  const explorarF = aplicarFiltros(explorar, filtrosConFavs).filter(({ receta }) => coincideBusqueda(receta))
 
   const totales = completasF.length + unoF.length + dosF.length
 
@@ -134,20 +152,41 @@ export default function ResultsView() {
   }
 
   if (completasF.length + unoF.length + dosF.length === 0) {
-    return (
-      <div className="mx-auto max-w-xl px-4 py-20 text-center animate-fade-up">
-        <span className="text-7xl" role="img" aria-hidden="true">😅</span>
-        <h2 className="mt-4 text-3xl font-black text-stone-900 dark:text-white">
-          {t('resultados.sinMatch')}
-        </h2>
-        <p className="mt-2 text-lg font-semibold text-stone-500 dark:text-stone-400">
-          {t('resultados.sinMatchSub')}
-        </p>
-        <button onClick={() => irA('inicio')} className="btn-primary mt-6">
-          {t('resultados.agregarMas')}
-        </button>
-      </div>
-    )
+    // Búsqueda activa sin resultados en ninguna sección (incluida "explorar")
+    if (q && explorarF.length === 0) {
+      return (
+        <div className="mx-auto max-w-xl px-4 py-20 text-center animate-fade-up">
+          <span className="text-7xl" role="img" aria-hidden="true">🔍</span>
+          <h2 className="mt-4 text-3xl font-black text-stone-900 dark:text-white">
+            {t('resultados.sinBusqueda', { q: busqueda.trim() })}
+          </h2>
+          <p className="mt-2 text-lg font-semibold text-stone-500 dark:text-stone-400">
+            {t('resultados.sinBusquedaSub')}
+          </p>
+          <button onClick={() => setBusqueda('')} className="btn-primary mt-6">
+            {t('filtros.buscarLimpiar')}
+          </button>
+        </div>
+      )
+    }
+    // Sin búsqueda: pantalla clásica de "no encontramos recetas con tus ingredientes"
+    if (!q) {
+      return (
+        <div className="mx-auto max-w-xl px-4 py-20 text-center animate-fade-up">
+          <span className="text-7xl" role="img" aria-hidden="true">😅</span>
+          <h2 className="mt-4 text-3xl font-black text-stone-900 dark:text-white">
+            {t('resultados.sinMatch')}
+          </h2>
+          <p className="mt-2 text-lg font-semibold text-stone-500 dark:text-stone-400">
+            {t('resultados.sinMatchSub')}
+          </p>
+          <button onClick={() => irA('inicio')} className="btn-primary mt-6">
+            {t('resultados.agregarMas')}
+          </button>
+        </div>
+      )
+    }
+    // Con búsqueda y resultados solo en "explorar": seguimos a la página normal
   }
 
   return (
@@ -174,6 +213,27 @@ export default function ResultsView() {
       </div>
 
       <div className="mb-8 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-900 dark:ring-stone-800 sm:p-5">
+        {/* Buscador por nombre o ingrediente */}
+        <div className="relative mb-4">
+          <input
+            type="search"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            placeholder={t('filtros.buscarPlaceholder')}
+            aria-label={t('filtros.buscarAria')}
+            className="w-full rounded-2xl border-2 border-stone-200 bg-crema-50 px-5 py-3 pr-12 text-base font-bold text-stone-800 placeholder:font-semibold placeholder:text-stone-400 transition-colors focus:border-green-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 dark:placeholder:text-stone-500"
+          />
+          {busqueda && (
+            <button
+              type="button"
+              onClick={() => setBusqueda('')}
+              aria-label={t('filtros.buscarLimpiar')}
+              className="absolute right-2.5 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-stone-700 dark:hover:text-stone-200"
+            >
+              ✕
+            </button>
+          )}
+        </div>
         <FiltersBar filtros={filtros} setFiltros={setFiltros} totales={totales} />
       </div>
 

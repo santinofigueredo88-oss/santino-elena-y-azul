@@ -74,6 +74,14 @@ export const TRADUCCIONES = {
     'home.destacadas': '🍽️ Recetas destacadas',
     'home.destacadasSub':
       'Ideas para inspirarte: tocá una y probá el guía paso a paso.',
+    'home.sorpresa': '🎲 Receta al azar',
+    'home.sorpresaAria': 'Abrir una receta al azar',
+    'home.compartirIng': '🔗 Copiar link con mis ingredientes',
+    'home.compartirIngAria': 'Copiar el link con tus ingredientes',
+    'home.linkCopiado': '✅ ¡Link copiado!',
+    'home.whatsappIngAria': 'Compartir tus ingredientes por WhatsApp',
+    'home.whatsappIngTexto':
+      '🍳 Te paso mis ingredientes para que veamos qué podemos cocinar: {n} →',
 
     // ---- Card ----
     'card.tenesTodo': '✅ ¡Tenés todo!',
@@ -113,8 +121,22 @@ export const TRADUCCIONES = {
     'modal.siempreEnCasa': 'siempre en casa',
     'modal.pasos': 'Pasos 👨‍🍳',
     'modal.compartir': '💬 Compartir por WhatsApp',
+    'modal.imprimir': '🖨️ Imprimir',
+    'modal.imprimirAria': 'Imprimir o guardar la receta en PDF',
+    'modal.pieImpresion': 'Receta hecha con ¿Qué Cocino? 🍳',
+    'modal.timer': 'Temporizador',
+    'modal.timerAria': 'Temporizador de cocina',
+    'modal.timerElegi':
+      'Elegí un tiempo y cociná sin distracciones.',
+    'modal.timerPausar': '⏸️ Pausar',
+    'modal.timerReanudar': '▶️ Reanudar',
+    'modal.timerReiniciar': '🔄 Reiniciar',
+    'modal.timerListo': '¡Tiempo cumplido! 🎉',
 
     // ---- Resultados ----
+    'filtros.buscarAria': 'Buscar recetas por nombre o ingrediente',
+    'filtros.buscarPlaceholder': '🔍 Buscar por nombre o ingrediente…',
+    'filtros.buscarLimpiar': 'Limpiar búsqueda',
     'filtros.ariaTipo': 'Filtrar por tipo de comida',
     'filtros.ariaTiempo': 'Filtrar por tiempo',
     'filtros.ariaDificultad': 'Filtrar por dificultad',
@@ -135,6 +157,8 @@ export const TRADUCCIONES = {
     'resultados.sinMatchSub':
       'Probá agregar ingredientes básicos como papas, arroz, fideos, huevos o alguna verdura.',
     'resultados.agregarMas': '➕ Agregar más ingredientes',
+    'resultados.sinBusqueda': 'No encontramos recetas con "{q}"',
+    'resultados.sinBusquedaSub': 'Probá con otro nombre o ingrediente.',
     'resultados.titulo': 'Resultados para tu heladera',
     'resultados.sub':
       '{n} ingrediente cargado · primero lo que podés hacer ya mismo',
@@ -175,6 +199,13 @@ export const TRADUCCIONES = {
     'lista.vaciar': 'Vaciar todo',
     'lista.eliminarAria': 'Eliminar {nombre} de la lista',
     'lista.yaTenes': 'Ya tenés ✓',
+    'lista.compartir': '💬 Compartir por WhatsApp',
+    'lista.compartirAria': 'Compartir la lista de compras por WhatsApp',
+    'lista.copiar': '📋 Copiar lista',
+    'lista.copiarAria': 'Copiar la lista de compras',
+    'lista.copiado': '✅ ¡Lista copiada!',
+    'lista.textoTitulo': '🛒 *Mi lista de compras*',
+    'lista.textoFooter': 'Lista hecha con ¿Qué Cocino? 🍳',
 
     // ---- Bot guía ----
     'bot.chefGuia': 'Chef Guía',
@@ -349,6 +380,14 @@ export const TRADUCCIONES = {
     'home.destacadas': '🍽️ Featured recipes',
     'home.destacadasSub':
       'Ideas to inspire you: tap one and try the step-by-step guide.',
+    'home.sorpresa': '🎲 Random recipe',
+    'home.sorpresaAria': 'Open a random recipe',
+    'home.compartirIng': '🔗 Copy link with my ingredients',
+    'home.compartirIngAria': 'Copy the link with your ingredients',
+    'home.linkCopiado': '✅ Link copied!',
+    'home.whatsappIngAria': 'Share your ingredients on WhatsApp',
+    'home.whatsappIngTexto':
+      '🍳 Here are my ingredients so we can see what to cook: {n} →',
 
     // ---- Card ----
     'card.tenesTodo': '✅ You have everything!',
@@ -388,8 +427,21 @@ export const TRADUCCIONES = {
     'modal.siempreEnCasa': 'always at home',
     'modal.pasos': 'Steps 👨‍🍳',
     'modal.compartir': '💬 Share on WhatsApp',
+    'modal.imprimir': '🖨️ Print',
+    'modal.imprimirAria': 'Print or save the recipe as PDF',
+    'modal.pieImpresion': 'Recipe made with ¿Qué Cocino? 🍳',
+    'modal.timer': 'Timer',
+    'modal.timerAria': 'Cooking timer',
+    'modal.timerElegi': 'Pick a time and cook distraction-free.',
+    'modal.timerPausar': '⏸️ Pause',
+    'modal.timerReanudar': '▶️ Resume',
+    'modal.timerReiniciar': '🔄 Reset',
+    'modal.timerListo': "Time's up! 🎉",
 
     // ---- Results ----
+    'filtros.buscarAria': 'Search recipes by name or ingredient',
+    'filtros.buscarPlaceholder': '🔍 Search by name or ingredient…',
+    'filtros.buscarLimpiar': 'Clear search',
     'filtros.ariaTipo': 'Filter by meal type',
     'filtros.ariaTiempo': 'Filter by time',
     'filtros.ariaDificultad': 'Filter by difficulty',
@@ -410,6 +462,8 @@ export const TRADUCCIONES = {
     'resultados.sinMatchSub':
       'Try adding basic ingredients like potatoes, rice, pasta, eggs or a vegetable.',
     'resultados.agregarMas': '➕ Add more ingredients',
+    'resultados.sinBusqueda': 'No recipes match "{q}"',
+    'resultados.sinBusquedaSub': 'Try another name or ingredient.',
     'resultados.titulo': 'Results for your fridge',
     'resultados.sub':
       '{n} ingredient loaded · first what you can make right now',
@@ -450,6 +504,13 @@ export const TRADUCCIONES = {
     'lista.vaciar': 'Clear all',
     'lista.eliminarAria': 'Remove {nombre} from the list',
     'lista.yaTenes': 'Already have ✓',
+    'lista.compartir': '💬 Share on WhatsApp',
+    'lista.compartirAria': 'Share the shopping list on WhatsApp',
+    'lista.copiar': '📋 Copy list',
+    'lista.copiarAria': 'Copy the shopping list',
+    'lista.copiado': '✅ List copied!',
+    'lista.textoTitulo': '🛒 *My shopping list*',
+    'lista.textoFooter': 'List made with ¿Qué Cocino? 🍳',
 
     // ---- Guide bot ----
     'bot.chefGuia': 'Chef Guide',

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useApp } from '../context/AppContext.jsx'
 import {
   BASICOS,
@@ -13,6 +14,7 @@ import {
 import { TIPOS_DE_COMIDA } from '../data/recetas.js'
 import RecipeImage from './RecipeImage.jsx'
 import CocinaBot from './CocinaBot.jsx'
+import CocinaTimer from './CocinaTimer.jsx'
 
 const NIVEL_DIFICULTAD = {
   facil: { emoji: '🙂' },
@@ -300,6 +302,9 @@ export default function RecipeModal() {
               ))}
             </ol>
 
+            {/* Temporizador de cocina (se reinicia al cambiar de receta) */}
+            <CocinaTimer key={receta.id} />
+
             {/* Acciones */}
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <button
@@ -314,6 +319,13 @@ export default function RecipeModal() {
                 className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 py-3.5 font-extrabold text-white shadow-md shadow-green-600/25 transition-all hover:bg-green-500 active:scale-[0.98]"
               >
                 {t('modal.compartir')}
+              </button>
+              <button
+                onClick={() => window.print()}
+                aria-label={t('modal.imprimirAria')}
+                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-stone-100 px-5 py-3.5 font-extrabold text-stone-700 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-200 dark:hover:bg-stone-700"
+              >
+                {t('modal.imprimir')}
               </button>
               <button
                 onClick={cerrarReceta}
@@ -337,6 +349,50 @@ export default function RecipeModal() {
           />
         </div>
       </div>
+
+      {/* ---- Vista imprimible (solo se ve al imprimir / guardar PDF) ---- */}
+      {createPortal(
+        <div className="print-contenido mx-auto hidden max-w-2xl p-10 print:block">
+          <h1 className="font-display text-3xl font-black tracking-tight text-stone-900">
+            {receta.nombre}
+          </h1>
+          <p className="mt-1 text-sm font-bold text-stone-600">
+            ⏱️ {receta.tiempoMinutos} min ·{' '}
+            {tN('modal.porcion', 'modal.porciones', porciones)} ·{' '}
+            {nivel.emoji} {t('dificultad.' + receta.dificultad)} ·{' '}
+            {tipo?.emoji} {tipo ? t('tipo.' + tipo.id, null, tipo.nombre) : ''}
+          </p>
+          <h2 className="mt-6 text-lg font-black text-stone-900">
+            {t('modal.ingredientes')}{' '}
+            <span className="text-sm font-bold text-stone-500">
+              {tN('modal.paraPersona', 'modal.paraPersonas', porciones)}
+            </span>
+          </h2>
+          <ul className="mt-2 grid grid-cols-1 gap-1 sm:grid-cols-2">
+            {receta.ingredientes.map((ing) => {
+              const esc = escalarIngrediente(ing, receta.porciones, porciones)
+              return (
+                <li key={ing.id} className="text-[15px] font-semibold text-stone-800">
+                  • {formatearCantidad(esc.cantidad)} {esc.unidad} de{' '}
+                  {nombreDeIngrediente(ing.id).toLowerCase()}
+                </li>
+              )
+            })}
+          </ul>
+          <h2 className="mt-6 text-lg font-black text-stone-900">{t('modal.pasos')}</h2>
+          <ol className="mt-2 list-decimal space-y-2 pl-5">
+            {receta.pasos.map((paso, i) => (
+              <li key={i} className="text-[15px] font-semibold leading-relaxed text-stone-800">
+                {paso}
+              </li>
+            ))}
+          </ol>
+          <p className="mt-8 text-xs font-bold text-stone-400">
+            {t('modal.pieImpresion')}
+          </p>
+        </div>,
+        document.body
+      )}
     </div>
   )
 }

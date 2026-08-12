@@ -1,4 +1,10 @@
+import { useMemo, useState } from 'react'
 import { useApp } from '../context/AppContext.jsx'
+import {
+  construirTextoListaCompras,
+  compartirListaWhatsApp,
+  copiarAlPortapapeles,
+} from '../lib/share.js'
 
 export default function ShoppingListView() {
   const {
@@ -11,9 +17,36 @@ export default function ShoppingListView() {
     t,
     tN,
   } = useApp()
+  const [copiado, setCopiado] = useState(false)
 
   const pendientes = listaCompras.filter((i) => !i.checked)
   const comprados = listaCompras.filter((i) => i.checked)
+
+  const textoLista = useMemo(() => {
+    if (listaCompras.length === 0) return ''
+    return construirTextoListaCompras({
+      titulo: t('lista.textoTitulo'),
+      pendientes,
+      comprados,
+      footer: t('lista.textoFooter'),
+    })
+  }, [listaCompras, pendientes, comprados, t])
+
+  const compartirLista = () => {
+    if (!textoLista) return
+    compartirListaWhatsApp(textoLista)
+  }
+
+  const copiarLista = async () => {
+    if (!textoLista) return
+    try {
+      await copiarAlPortapapeles(textoLista)
+      setCopiado(true)
+      setTimeout(() => setCopiado(false), 2000)
+    } catch {
+      /* sin acceso al portapapeles: no hacemos nada */
+    }
+  }
 
   if (listaCompras.length === 0) {
     return (
@@ -48,7 +81,25 @@ export default function ShoppingListView() {
             {tN('lista.comprado', 'lista.comprados', comprados.length)}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={compartirLista}
+            aria-label={t('lista.compartirAria')}
+            className="rounded-xl bg-green-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-md shadow-green-600/25 transition-all hover:-translate-y-0.5 hover:bg-green-500 hover:shadow-lg active:translate-y-0"
+          >
+            {t('lista.compartir')}
+          </button>
+          <button
+            onClick={copiarLista}
+            aria-label={t('lista.copiarAria')}
+            className={`rounded-xl px-4 py-2.5 text-sm font-extrabold transition-colors ${
+              copiado
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-200'
+                : 'bg-white text-stone-700 ring-1 ring-stone-200 hover:bg-crema-100 dark:bg-stone-800 dark:text-stone-200 dark:ring-stone-700 dark:hover:bg-stone-700'
+            }`}
+          >
+            {copiado ? t('lista.copiado') : t('lista.copiar')}
+          </button>
           {comprados.length > 0 && (
             <button
               onClick={quitarComprados}

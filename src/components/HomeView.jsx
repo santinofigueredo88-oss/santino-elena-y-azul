@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useApp } from '../context/AppContext.jsx'
 import {
   CATEGORIAS,
@@ -10,46 +10,52 @@ import {
 import { buscarIngrediente, normalizarTexto } from '../lib/normalizar.js'
 import { calcularFaltantes, clasificarRecetas } from '../lib/matching.js'
 import { RECETAS } from '../data/recetas.js'
+import {
+  urlConIngredientes,
+  compartirUrlWhatsApp,
+  copiarAlPortapapeles,
+} from '../lib/share.js'
 import RecipeCard from './RecipeCard.jsx'
 
 // Recetas destacadas para mostrar en el inicio cuando todavía no hay ingredientes cargados
 const DESTACADAS = ['panqueques', 'milanesas-de-carne', 'fideos-con-tuco', 'pizza-casera']
 
 // ---------------- Autocompletado ----------------
-function SuggestionList({ query, onSelect }) {
+function SuggestionList({ sugerencias, activa, onSeleccionar, onActivar }) {
   const { t } = useApp()
-  const sugerencias = useMemo(() => {
-    const n = normalizarTexto(query)
-    if (!n) return []
-    const matches = INGREDIENTES.filter((ing) => {
-      const hayado = buscarIngrediente(query)
-      if (hayado && hayado.id === ing.id) return true
-      const todos = [ing.nombre, ing.id, ...ing.sinonimos].map(normalizarTexto)
-      return todos.some((t) => t.includes(n) || n.includes(t))
-    }).slice(0, 8)
-    const exacto = matches.some((m) => normalizarTexto(m.nombre) === n)
-    if (matches.length > 0 && !exacto && n.length >= 3) {
-      matches.push({ custom: true, nombre: query.trim() })
-    }
-    return matches
-  }, [query])
+  const refs = useRef([])
+
+  // Mantener visible la sugerencia resaltada al navegar con teclado
+  useEffect(() => {
+    refs.current[activa]?.scrollIntoView({ block: 'nearest' })
+  }, [activa])
 
   if (sugerencias.length === 0) return null
 
   return (
     <ul
+      id="sugerencias-ingredientes"
       role="listbox"
       aria-label={t('home.sugerenciasAria')}
+      onMouseLeave={() => onActivar(-1)}
       className="absolute left-0 right-0 top-full z-30 mt-2 max-h-72 overflow-auto rounded-2xl border border-stone-200 bg-white p-1.5 shadow-xl shadow-stone-900/10 dark:border-stone-700 dark:bg-stone-800"
     >
       {sugerencias.map((s, idx) => {
         const cat = s.custom ? null : CATEGORIA_POR_ID[s.categoria]
+        const resaltada = activa === idx
         return (
-          <li key={s.custom ? `custom-${idx}` : s.id}>
+          <li key={s.custom ? `custom-${idx}` : s.id} ref={(el) => (refs.current[idx] = el)}>
             <button
               role="option"
-              onClick={() => onSelect(s.nombre)}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-green-50 dark:hover:bg-stone-700"
+              id={`sugerencia-${idx}`}
+              aria-selected={resaltada}
+              onClick={() => onSeleccionar(s.nombre)}
+              onMouseEnter={() => onActivar(idx)}
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+                resaltada
+                  ? 'bg-green-100 dark:bg-stone-700'
+                  : 'hover:bg-green-50 dark:hover:bg-stone-700/60'
+              }`}
             >
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-crema-100 text-lg dark:bg-stone-700">
                 {s.custom ? '➕' : (cat?.emoji ?? '🥫')}
@@ -226,6 +232,56 @@ export default function HomeView() {
   const { ingredientes, agregarIngrediente, limpiarIngredientes, irA, idsIngredientes, abrirReceta, t, tN } = useApp()
   const [texto, setTexto] = useState('')
   const [foco, setFoco] = useState(false)
+  const [activa, setActiva] = useState(-1)
+  const [copiadoLink, setCopiadoLink] = useState(false)
+
+  // Último segmento (tras la última coma) para las sugerencias en vivo:
+  // "papa, tom" sugiere ingredientes para "tom".
+  const segmento = useMemo(() => texto.split(',').pop() ?? '', [texto])
+
+  const sugerencias = useMemo(() => {
+    const n = normalizarTexto(segmento)
+    if (!n) return []
+    const matches = INGREDIENTES.filter((ing) => {
+      const hayado = buscarIngrediente(segmento)
+      if (hayado && hayado.id === ing.id) return true
+      const todos = [ing.nombre, ing.id, ...ing.sinonimos].map(normalizarTexto)
+      return todos.some((t) => t.includes(n) || n.includes(t))
+    }).slice(0, 8)
+    const exacto = matches.some((m) => normalizarTexto(m.nombre) === n)
+    if (matches.length > 0 && !exacto && n.length >= 3) {
+      matches.push({ custom: true, nombre: segmento.trim() })
+    }
+    return matches
+  }, [segmento])
+
+  // Agrega varios ingredientes separados por comas: "papa, tomate, cebolla"
+  const agregarVarios = useCallback(
+    (textoIngresado) => {
+      const partes = textoIngresado
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+      if (partes.length === 0) return false
+      let alguno = false
+      for (const parte of partes) {
+        if (agregarIngrediente(parte)) alguno = true
+      }
+      return alguno
+    },
+    [agregarIngrediente]
+  )
+
+  // Al elegir una sugerencia con el input "papa, tom": reemplaza el último
+  // segmento por el ingrediente elegido y agrega todo junto.
+  const seleccionarSugerencia = (nombre) => {
+    const partes = texto.split(',')
+    partes[partes.length - 1] = nombre
+    agregarVarios(partes.join(','))
+    setTexto('')
+    setFoco(false)
+    setActiva(-1)
+  }
 
   const totalPosibles = useMemo(
     () => RECETAS.filter((r) => calcularFaltantes(r, idsIngredientes) === 0).length,
@@ -265,8 +321,72 @@ export default function HomeView() {
 
   const manejarSubmit = (e) => {
     e.preventDefault()
-    const ok = agregarIngrediente(texto)
-    if (ok) setTexto('')
+    // Enter con una sugerencia resaltada: elegirla (y agregar el resto)
+    if (activa >= 0 && sugerencias[activa]) {
+      seleccionarSugerencia(sugerencias[activa].nombre)
+      return
+    }
+    const partes = texto
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+    const ultima = partes[partes.length - 1]
+    // Si el último segmento es parcial (hay sugerencias reales que lo
+    // completan) y no es el único, no lo agregamos como custom: dejamos
+    // el input con ese segmento para que el usuario elija la sugerencia.
+    const ultimaResuelve = ultima ? buscarIngrediente(ultima) !== null : true
+    const haySugerenciasReales = sugerencias.some((s) => !s.custom)
+    const hayParcial =
+      partes.length > 1 && ultima && !ultimaResuelve && haySugerenciasReales
+    const aAgregar = hayParcial ? partes.slice(0, -1).join(',') : texto
+    const ok = agregarVarios(aAgregar)
+    if (ok) setTexto(hayParcial ? ultima : '')
+    setActiva(-1)
+  }
+
+  // Link con los ingredientes cargados: copiar al portapapeles o WhatsApp
+  const copiarLink = async () => {
+    const url = urlConIngredientes(idsIngredientes)
+    try {
+      await copiarAlPortapapeles(url)
+      setCopiadoLink(true)
+      setTimeout(() => setCopiadoLink(false), 2000)
+    } catch {
+      /* sin acceso al portapapeles: no hacemos nada */
+    }
+  }
+
+  const compartirWhatsApp = () => {
+    const url = urlConIngredientes(idsIngredientes)
+    const nombres = ingredientes.map((i) => i.nombre).join(', ')
+    compartirUrlWhatsApp(t('home.whatsappIngTexto', { n: nombres }), url)
+  }
+
+  // Receta al azar: abre el modal directo, ideal para inspirarse
+  const abrirSorpresa = () => {
+    const receta = RECETAS[Math.floor(Math.random() * RECETAS.length)]
+    abrirReceta(receta)
+  }
+
+  // Navegación por teclado del autocompletado
+  const manejarTeclado = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (sugerencias.length === 0) {
+        setFoco(true)
+        return
+      }
+      setFoco(true)
+      setActiva((a) => (a + 1) % sugerencias.length)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (sugerencias.length === 0) return
+      setFoco(true)
+      setActiva((a) => (a <= 0 ? sugerencias.length - 1 : a - 1))
+    } else if (e.key === 'Escape') {
+      setFoco(false)
+      setActiva(-1)
+    }
   }
 
   return (
@@ -286,10 +406,19 @@ export default function HomeView() {
             <input
               id="input-ingrediente"
               type="text"
+              role="combobox"
+              aria-expanded={foco && sugerencias.length > 0}
+              aria-controls="sugerencias-ingredientes"
+              aria-autocomplete="list"
+              aria-activedescendant={activa >= 0 ? `sugerencia-${activa}` : undefined}
               value={texto}
-              onChange={(e) => setTexto(e.target.value)}
+              onChange={(e) => {
+                setTexto(e.target.value)
+                setActiva(-1)
+              }}
               onFocus={() => setFoco(true)}
               onBlur={() => setTimeout(() => setFoco(false), 120)}
+              onKeyDown={manejarTeclado}
               placeholder={t('home.placeholder')}
               autoComplete="off"
               className="w-full flex-1 rounded-2xl border-2 border-stone-200 bg-crema-50 px-5 py-3.5 text-lg font-semibold text-stone-800 placeholder:text-stone-400 focus:border-green-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 dark:placeholder:text-stone-500"
@@ -301,23 +430,65 @@ export default function HomeView() {
               {t('home.agregar')}
             </button>
           </div>
-          {foco && <SuggestionList query={texto} onSelect={(nombre) => { agregarIngrediente(nombre); setTexto('') }} />}
+          {foco && (
+            <SuggestionList
+              sugerencias={sugerencias}
+              activa={activa}
+              onSeleccionar={seleccionarSugerencia}
+              onActivar={setActiva}
+            />
+          )}
 
           <div className="mt-4 min-h-10">
             <ChipsList />
           </div>
 
-          <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-            <button
-              type="button"
-              onClick={() => irA('resultados')}
-              disabled={ingredientes.length === 0}
-              className="btn-primary w-full sm:w-auto"
-            >
-              {t('home.buscar')}
-            </button>
+          <div className="mt-5 flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => irA('resultados')}
+                disabled={ingredientes.length === 0}
+                className="btn-primary"
+              >
+                {t('home.buscar')}
+              </button>
+              <button
+                type="button"
+                onClick={abrirSorpresa}
+                aria-label={t('home.sorpresaAria')}
+                title={t('home.sorpresa')}
+                className="grid h-[54px] w-[54px] place-items-center rounded-2xl bg-white text-2xl ring-1 ring-stone-200 transition-all hover:-translate-y-0.5 hover:bg-lime-100 hover:ring-lime-300 dark:bg-stone-800 dark:ring-stone-700 dark:hover:bg-stone-700"
+              >
+                🎲
+              </button>
+              {ingredientes.length > 0 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={copiarLink}
+                    aria-label={t('home.compartirIngAria')}
+                    className={`rounded-2xl px-4 py-3.5 text-sm font-extrabold transition-all ${
+                      copiadoLink
+                        ? 'bg-green-100 text-green-700 ring-1 ring-green-300 dark:bg-green-900/50 dark:text-green-200 dark:ring-green-700'
+                        : 'bg-white text-stone-600 ring-1 ring-stone-200 hover:-translate-y-0.5 hover:bg-green-50 hover:text-green-700 hover:ring-green-300 dark:bg-stone-800 dark:text-stone-200 dark:ring-stone-700 dark:hover:bg-stone-700'
+                    }`}
+                  >
+                    {copiadoLink ? t('home.linkCopiado') : t('home.compartirIng')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={compartirWhatsApp}
+                    aria-label={t('home.whatsappIngAria')}
+                    className="rounded-2xl bg-green-600 px-4 py-3.5 text-sm font-extrabold text-white shadow-md shadow-green-600/25 transition-all hover:-translate-y-0.5 hover:bg-green-500"
+                  >
+                    💬 WhatsApp
+                  </button>
+                </>
+              )}
+            </div>
             {ingredientes.length > 0 && (
-              <>
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-bold text-stone-500 dark:text-stone-400">
                   {tN('home.recetaLista', 'home.recetasListas', totalPosibles)}
                 </p>
@@ -328,7 +499,7 @@ export default function HomeView() {
                 >
                   {t('home.vaciar')}
                 </button>
-              </>
+              </div>
             )}
           </div>
         </form>

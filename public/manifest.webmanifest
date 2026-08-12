@@ -1,0 +1,19 @@
+{
+  "name": "¿Qué Cocino? — Recetas con lo que tenés",
+  "short_name": "Qué Cocino",
+  "description": "Cargá los ingredientes que tenés y descubrí recetas caseras para hacer hoy, con guía paso a paso.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fbf6",
+  "theme_color": "#16a34a",
+  "lang": "es",
+  "categories": ["food", "lifestyle"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

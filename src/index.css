@@ -133,6 +133,17 @@ html.dark {
   }
 }
 
+/* ── Impresión: solo se imprime la vista imprimible de la receta ── */
+@media print {
+  @page {
+    margin: 1.2cm;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+}
+
 /* Botón primario con brillo suave (verde) */
 .btn-primary {
   @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-green-600 px-6 py-3.5 text-lg font-extrabold text-white shadow-lg shadow-green-600/25 transition-all duration-200 hover:bg-green-500 hover:shadow-xl hover:shadow-green-500/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-lg;

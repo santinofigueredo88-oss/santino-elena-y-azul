@@ -17,7 +17,9 @@ async function chequear(url) {
       headers: { Range: 'bytes=0-1023' },
       signal: AbortSignal.timeout(20000),
     })
-    return { url, ok: res.ok, status: res.status }
+    // 429 = rate limit temporal del CDN (Wikimedia), no es una URL caída.
+    const ok = res.ok || res.status === 429
+    return { url, ok, status: res.status }
   } catch (e) {
     return { url, ok: false, status: e.name ?? 'error' }
   }

@@ -4,6 +4,7 @@
 // dificultad: facil | media | dificil
 // Los ingredientes "básicos" (sal, aceite, etc.) no cuentan como faltantes.
 // ============================================================
+import { RECETAS_INTERNACIONALES } from './recetas-internacionales.js'
 
 export const RECETAS = [
   // ================= DESAYUNO =================
@@ -2354,10 +2355,31 @@ export const RECETAS = [
       'Volcar en molde enmantecado y hornear 45 minutos a 180°.',
     ],
   },
+  ...RECETAS_INTERNACIONALES,
 ]
 
 // Utilidades
 export const RECETA_POR_ID = Object.fromEntries(RECETAS.map((r) => [r.id, r]))
+
+// Países / cocinas del mundo. Las recetas sin `pais` son de Argentina.
+export const PAISES = [
+  { id: 'argentina', nombre: 'Argentina', emoji: '🇦🇷' },
+  { id: 'italia', nombre: 'Italia', emoji: '🇮🇹' },
+  { id: 'mexico', nombre: 'México', emoji: '🇲🇽' },
+  { id: 'japon', nombre: 'Japón', emoji: '🇯🇵' },
+  { id: 'espana', nombre: 'España', emoji: '🇪🇸' },
+  { id: 'reino-unido', nombre: 'Reino Unido', emoji: '🇬🇧' },
+]
+
+export const PAIS_POR_ID = Object.fromEntries(PAISES.map((p) => [p.id, p]))
+
+export function paisDeReceta(receta) {
+  return receta.pais ?? 'argentina'
+}
+
+export function nombreDePais(receta) {
+  return PAIS_POR_ID[paisDeReceta(receta)]?.nombre ?? 'Argentina'
+}
 
 export const TIPOS_DE_COMIDA = [
   { id: 'desayuno', nombre: 'Desayuno', emoji: '🌅' },

@@ -36,9 +36,14 @@ npm run preview
   ingredientes (menos faltantes = más arriba), y una sección colapsada
   "Explorá más recetas" para el resto. Los condimentos básicos (sal, aceite,
   agua, pimienta, etc.) se asumen siempre disponibles y no cuentan como faltantes.
-- **Fotos reales en cada receta**: las 98 recetas tienen foto (Unsplash,
-  URLs verificadas en `src/data/imagenes.js`), con un fallback ilustrado
-  (gradiente + emoji) si la imagen no carga.
+- **Fotos reales en cada receta**: las 127 recetas tienen foto real del plato
+  (Wikimedia/Wikipedia para las argentinas y TheMealDB para las
+  internacionales, URLs verificadas en `src/data/imagenes.js`), con un
+  fallback ilustrado (gradiente + emoji) si la imagen no carga.
+- **🌍 Cocinas del mundo**: sección en el inicio con 5 cocinas
+  internacionales (🇮🇹 Italia, 🇲🇽 México, 🇯🇵 Japón, 🇪🇸 España y
+  🇬🇧 Reino Unido) con 29 recetas típicas, cada una con su bandera en las
+  tarjetas y filtro por país en los resultados.
 - **🤖 Chef Guía (bot paso a paso)**: en cada receta, un chat que te guía
   paso a paso para cocinar. Detecta los ingredientes que tenés, avisa cuáles
   faltan, y **sugiere sustituciones con lo que ya tenés en casa**
@@ -80,7 +85,8 @@ Valida integridad de datos, matching, fotos y sustituciones.
 src/
 ├── data/
 │   ├── ingredientes.js   # Base de ingredientes (categorías, sinónimos, básicos)
-│   └── recetas.js        # ~60 recetas caseras argentinas
+│   ├── recetas.js        # 98 recetas caseras argentinas
+│   └── recetas-internacionales.js  # 29 recetas de otros países
 ├── lib/
 │   ├── matching.js       # Motor de match (faltantes, clasificación, filtros)
 │   ├── normalizar.js     # Normalización de texto y resolución de sinónimos
@@ -114,3 +120,9 @@ En `src/data/recetas.js`, cada receta es un objeto con `id`, `nombre`,
 (array de `{ id, cantidad, unidad }` referenciando ids de `ingredientes.js`)
 y `pasos` (array de strings). Los ingredientes nuevos hay que sumarlos también
 a `ingredientes.js` para que funcionen el autocompletado y el match.
+
+Para recetas de otros países, sumarlas a `src/data/recetas-internacionales.js`
+con el campo `pais` (italia | mexico | japon | espana | reino-unido): se
+integran solas al catálogo, al filtro por país y a la sección "Cocinas del
+mundo". Las fotos se regeneran con `node scripts/generar-imagenes-reales.mjs`
+(TheMealDB para internacionales, Wikipedia para argentinas).

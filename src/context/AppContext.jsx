@@ -43,6 +43,8 @@ export function AppProvider({ children }) {
   // Navegación
   const [vista, setVista] = useState('inicio') // inicio | resultados | lista | favoritos
   const [recetaActiva, setRecetaActiva] = useState(null) // modal de detalle
+  // Filtro de país solicitado desde el inicio ("Cocinas del mundo")
+  const [paisFiltro, setPaisFiltro] = useState(null)
 
   // ---------- Carga desde link (?ing=papa,tomate) ----------
   // Al abrir un link compartido, cargamos esos ingredientes (sin pisar los
@@ -182,6 +184,7 @@ export function AppProvider({ children }) {
   const irA = useCallback((destino) => {
     setVista(destino)
     setRecetaActiva(null)
+    setPaisFiltro(null) // la navegación normal no arrastra el filtro de país
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
@@ -190,6 +193,14 @@ export function AppProvider({ children }) {
   }, [])
 
   const cerrarReceta = useCallback(() => setRecetaActiva(null), [])
+
+  // Ir a resultados con un país pre-filtrado (desde "Cocinas del mundo")
+  const irAPais = useCallback((pais) => {
+    setPaisFiltro(pais)
+    setVista('resultados')
+    setRecetaActiva(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
 
   const value = useMemo(
     () => ({
@@ -218,6 +229,8 @@ export function AppProvider({ children }) {
       recetaActiva,
       abrirReceta,
       cerrarReceta,
+      paisFiltro,
+      irAPais,
     }),
     [
       ingredientes,
@@ -245,6 +258,8 @@ export function AppProvider({ children }) {
       recetaActiva,
       abrirReceta,
       cerrarReceta,
+      paisFiltro,
+      irAPais,
     ]
   )
 

@@ -1,12 +1,19 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useApp } from '../context/AppContext.jsx'
-import { RECETAS, TIPOS_DE_COMIDA } from '../data/recetas.js'
+import {
+  RECETAS,
+  TIPOS_DE_COMIDA,
+  PAISES,
+  PAIS_POR_ID,
+  paisDeReceta,
+} from '../data/recetas.js'
 import { INGREDIENTE_POR_ID, nombreDeIngrediente } from '../data/ingredientes.js'
 import { normalizarTexto } from '../lib/normalizar.js'
 import {
   clasificarRecetas,
   agruparCasi,
   aplicarFiltros,
+  calcularFaltantes,
 } from '../lib/matching.js'
 import RecipeCard from './RecipeCard.jsx'
 
@@ -20,9 +27,22 @@ function FiltersBar({ filtros, setFiltros, totales }) {
         : 'bg-white text-stone-600 ring-1 ring-stone-200 hover:bg-crema-100 dark:bg-stone-800 dark:text-stone-300 dark:ring-stone-700 dark:hover:bg-stone-700'
     }`
 
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('filtros.ariaTipo')}>
+  return (      <div className="flex flex-col gap-3">
+        {/* País / cocina */}
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('filtros.ariaPais')}>
+          <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-400 dark:text-stone-500">{t('filtros.pais')}</span>
+          <button className={pill(!filtros.pais)} onClick={() => setFiltros({ ...filtros, pais: null })}>{t('filtros.todos')}</button>
+          {PAISES.map((p) => (
+            <button
+              key={p.id}
+              className={pill(filtros.pais === p.id)}
+              onClick={() => setFiltros({ ...filtros, pais: filtros.pais === p.id ? null : p.id })}
+            >
+              {p.emoji} {t('pais.' + p.id, null, p.nombre)}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('filtros.ariaTipo')}>
         <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-400 dark:text-stone-500">{t('filtros.tipo')}</span>
         <button className={pill(!filtros.tipo)} onClick={() => setFiltros({ ...filtros, tipo: null })}>{t('filtros.todos')}</button>
         {TIPOS_DE_COMIDA.map((t) => (
@@ -50,8 +70,13 @@ function FiltersBar({ filtros, setFiltros, totales }) {
         <button className={pill(filtros.dificultad === 'dificil')} onClick={() => setFiltros({ ...filtros, dificultad: filtros.dificultad === 'dificil' ? null : 'dificil' })}>🧑‍🍳 {t('dificultad.dificil')}</button>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-bold text-stone-600 dark:text-stone-300">
+        <label
+          htmlFor="filtro-solo-favoritos"
+          className="inline-flex cursor-pointer items-center gap-2 text-sm font-bold text-stone-600 dark:text-stone-300"
+        >
           <input
+            id="filtro-solo-favoritos"
+            name="soloFavoritos"
             type="checkbox"
             checked={filtros.soloFavoritos}
             onChange={(e) => setFiltros({ ...filtros, soloFavoritos: e.target.checked })}
@@ -93,8 +118,9 @@ function Seccion({ titulo, subtitulo, items, idsUsuario, onAbrir, acento }) {
 
 // ---------- Vista principal de resultados ----------
 export default function ResultsView() {
-  const { idsIngredientes, favoritos, abrirReceta, irA, ingredientes, t, tN } = useApp()
+  const { idsIngredientes, favoritos, abrirReceta, irA, ingredientes, t, tN, paisFiltro } = useApp()
   const [filtros, setFiltros] = useState({
+    pais: paisFiltro,
     tipo: null,
     tiempo: null,
     dificultad: null,
@@ -136,7 +162,96 @@ export default function ResultsView() {
 
   const totales = completasF.length + unoF.length + dosF.length
 
-  if (ingredientes.length === 0) {
+  // Vista especial: entrando desde "Cocinas del mundo" sin ingredientes,
+  // mostramos todas las recetas del país elegido, con buscador y filtros
+  // combinables (tipo, tiempo, dificultad, favoritos).
+  if (ingredientes.length === 0 && filtros.pais) {
+    const pais = PAIS_POR_ID[filtros.pais]
+    const recetasPais = RECETAS.filter((r) => paisDeReceta(r) === filtros.pais)
+    const recetasPaisItems = recetasPais.map((receta) => ({
+      receta,
+      faltantes: calcularFaltantes(receta, idsIngredientes),
+    }))
+    const paisFiltradas = aplicarFiltros(recetasPaisItems, filtrosConFavs).filter(
+      ({ receta }) => coincideBusqueda(receta)
+    )
+    const totalPais = paisFiltradas.length
+
+    // Búsqueda sin resultados dentro del país
+    if (q && totalPais === 0) {
+      return (
+        <div className="mx-auto max-w-xl px-4 py-20 text-center animate-fade-up">
+          <span className="text-7xl" role="img" aria-hidden="true">🔍</span>
+          <h2 className="mt-4 text-3xl font-black text-stone-900 dark:text-white">
+            {t('resultados.sinBusqueda', { q: busqueda.trim() })}
+          </h2>
+          <p className="mt-2 text-lg font-semibold text-stone-500 dark:text-stone-400">
+            {t('resultados.sinBusquedaSub')}
+          </p>
+          <button onClick={() => setBusqueda('')} className="btn-primary mt-6">
+            {t('filtros.buscarLimpiar')}
+          </button>
+        </div>
+      )
+    }
+
+    return (
+      <div className="mx-auto max-w-6xl px-4 pb-20">
+        <div className="py-8">
+          <p className="text-sm font-black uppercase tracking-widest text-green-600 dark:text-green-400">
+            🌍 {t('home.mundoTitulo')}
+          </p>
+          <h1 className="mt-1 font-display text-3xl font-black tracking-tight text-stone-900 dark:text-white sm:text-4xl">
+            {pais?.emoji} {t('resultados.cocinaDe', { pais: pais ? t('pais.' + pais.id, null, pais.nombre) : filtros.pais })}
+          </h1>
+          <p className="mt-1 text-base font-semibold text-stone-500 dark:text-stone-400">
+            {tN('resultados.cocinaDeSub', 'resultados.cocinaDeSubPlural', recetasPais.length)}
+          </p>
+        </div>
+
+        {/* Buscador y filtros combinables con el país */}
+        <div className="mb-8 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-900 dark:ring-stone-800 sm:p-5">
+          <div className="relative mb-4">
+            <input
+              id="busqueda-pais"
+              name="busquedaPais"
+              type="search"
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              placeholder={t('filtros.buscarPaisPlaceholder')}
+              aria-label={t('filtros.buscarPaisAria')}
+              className="w-full rounded-2xl border-2 border-stone-200 bg-crema-50 px-5 py-3 pr-12 text-base font-bold text-stone-800 placeholder:font-semibold placeholder:text-stone-400 transition-colors focus:border-green-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 dark:placeholder:text-stone-500"
+            />
+            {busqueda && (
+              <button
+                type="button"
+                onClick={() => setBusqueda('')}
+                aria-label={t('filtros.buscarLimpiar')}
+                className="absolute right-2.5 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-stone-700 dark:hover:text-stone-200"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          <FiltersBar filtros={filtros} setFiltros={setFiltros} totales={totalPais} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {paisFiltradas.map(({ receta, faltantes }) => (
+            <RecipeCard
+              key={receta.id}
+              item={{ receta, faltantes, idsUsuario }}
+              onAbrir={abrirReceta}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // Sin ingredientes: el vacío clásico solo aplica si no hay un filtro de
+  // país activo (ej. entrando desde "Cocinas del mundo").
+  if (ingredientes.length === 0 && !filtros.pais) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center animate-fade-up">
         <span className="text-7xl" role="img" aria-hidden="true">🧺</span>
@@ -216,6 +331,8 @@ export default function ResultsView() {
         {/* Buscador por nombre o ingrediente */}
         <div className="relative mb-4">
           <input
+            id="busqueda-recetas"
+            name="busqueda"
             type="search"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}

@@ -9,7 +9,7 @@ import {
 } from '../data/ingredientes.js'
 import { buscarIngrediente, normalizarTexto } from '../lib/normalizar.js'
 import { calcularFaltantes, clasificarRecetas } from '../lib/matching.js'
-import { RECETAS } from '../data/recetas.js'
+import { RECETAS, PAISES, paisDeReceta } from '../data/recetas.js'
 import {
   urlConIngredientes,
   compartirUrlWhatsApp,
@@ -105,6 +105,60 @@ function ChipsList() {
         )
       })}
     </div>
+  )
+}
+
+// ---------------- Cocinas del mundo ----------------
+function CocinasDelMundo() {
+  const { irAPais, t } = useApp()
+  const recetasPorPais = useMemo(() => {
+    const mapa = {}
+    for (const receta of RECETAS) {
+      const p = paisDeReceta(receta)
+      mapa[p] = (mapa[p] ?? 0) + 1
+    }
+    return mapa
+  }, [])
+
+  const mundiales = PAISES.filter((p) => p.id !== 'argentina')
+
+  return (
+    <section
+      aria-label={t('home.mundoAria')}
+      className="mx-auto mt-10 max-w-6xl px-4"
+    >
+      <div className="rounded-3xl bg-gradient-to-br from-green-600 to-lime-500 p-6 shadow-lg shadow-green-600/20 dark:from-green-800 dark:to-lime-900 sm:p-8">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="font-display text-2xl font-black tracking-tight text-white sm:text-3xl">
+              🌍 {t('home.mundoTitulo')}
+            </h2>
+            <p className="mt-1 max-w-xl text-sm font-bold text-green-100">
+              {t('home.mundoSub')}
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {mundiales.map((pais) => (
+            <button
+              key={pais.id}
+              onClick={() => irAPais(pais.id)}
+              className="group rounded-2xl bg-white/95 p-4 text-left shadow-sm backdrop-blur transition-all hover:-translate-y-1 hover:shadow-lg dark:bg-stone-900/90"
+            >
+              <span className="block text-4xl transition-transform group-hover:scale-110 group-hover:rotate-6" aria-hidden="true">
+                {pais.emoji}
+              </span>
+              <span className="mt-2 block font-display text-lg font-black text-stone-900 dark:text-white">
+                {t('pais.' + pais.id, null, pais.nombre)}
+              </span>
+              <span className="block text-xs font-extrabold text-green-700 dark:text-green-400">
+                {recetasPorPais[pais.id] ?? 0} {t('home.mundoRecetas')}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -504,6 +558,9 @@ export default function HomeView() {
           </div>
         </form>
       </section>
+
+      {/* Cocinas del mundo */}
+      <CocinasDelMundo />
 
       {/* Botones rápidos */}
       <div className="mx-auto mt-10 max-w-5xl px-4">

@@ -1,4 +1,5 @@
 import { BASICOS } from '../data/ingredientes.js'
+import { paisDeReceta } from '../data/recetas.js'
 
 /**
  * Calcula cuántos ingredientes le faltan a una receta, ignorando los
@@ -55,6 +56,7 @@ export function agruparCasi(casi) {
 /** Filtros de resultados. */
 export function aplicarFiltros(lista, filtros) {
   return lista.filter(({ receta }) => {
+    if (filtros.pais && paisDeReceta(receta) !== filtros.pais) return false
     if (filtros.tipo && receta.categoria !== filtros.tipo) return false
     if (filtros.dificultad && receta.dificultad !== filtros.dificultad) return false
     if (filtros.tiempo) {

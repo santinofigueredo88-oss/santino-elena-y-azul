@@ -83,6 +83,28 @@ export const TRADUCCIONES = {
     'home.whatsappIngTexto':
       '🍳 Te paso mis ingredientes para que veamos qué podemos cocinar: {n} →',
 
+    // ---- Cocinas del mundo ----
+    'home.mundoAria': 'Cocinas del mundo',
+    'home.mundoTitulo': 'Cocinas del mundo',
+    'home.mundoSub':
+      'Recetas típicas de otros países: tocá una bandera y explorá su cocina.',
+    'home.mundoRecetas': 'recetas',
+    'pais.argentina': 'Argentina',
+    'pais.italia': 'Italia',
+    'pais.mexico': 'México',
+    'pais.japon': 'Japón',
+    'pais.espana': 'España',
+    'pais.reino-unido': 'Reino Unido',
+    'resultados.cocinaDe': 'Cocina {pais}',
+    'resultados.cocinaDeSub': '{n} receta típica para descubrir.',
+    'resultados.cocinaDeSubPlural': '{n} recetas típicas para descubrir.',
+
+    // ---- Filtro por país ----
+    'filtros.ariaPais': 'Filtrar por país o cocina',
+    'filtros.pais': 'País',
+    'filtros.buscarPaisPlaceholder': '🔍 Buscar dentro de esta cocina…',
+    'filtros.buscarPaisAria': 'Buscar recetas dentro de esta cocina',
+
     // ---- Card ----
     'card.tenesTodo': '✅ ¡Tenés todo!',
     'card.verReceta': 'Ver receta: {nombre}',
@@ -388,6 +410,28 @@ export const TRADUCCIONES = {
     'home.whatsappIngAria': 'Share your ingredients on WhatsApp',
     'home.whatsappIngTexto':
       '🍳 Here are my ingredients so we can see what to cook: {n} →',
+
+    // ---- World cuisines ----
+    'home.mundoAria': 'World cuisines',
+    'home.mundoTitulo': 'World cuisines',
+    'home.mundoSub':
+      'Typical recipes from other countries: tap a flag and explore its cooking.',
+    'home.mundoRecetas': 'recipes',
+    'pais.argentina': 'Argentina',
+    'pais.italia': 'Italy',
+    'pais.mexico': 'Mexico',
+    'pais.japon': 'Japan',
+    'pais.espana': 'Spain',
+    'pais.reino-unido': 'United Kingdom',
+    'resultados.cocinaDe': '{pais} cuisine',
+    'resultados.cocinaDeSub': '{n} typical recipe to discover.',
+    'resultados.cocinaDeSubPlural': '{n} typical recipes to discover.',
+
+    // ---- Country filter ----
+    'filtros.ariaPais': 'Filter by country or cuisine',
+    'filtros.pais': 'Country',
+    'filtros.buscarPaisPlaceholder': '🔍 Search within this cuisine…',
+    'filtros.buscarPaisAria': 'Search recipes within this cuisine',
 
     // ---- Card ----
     'card.tenesTodo': '✅ You have everything!',

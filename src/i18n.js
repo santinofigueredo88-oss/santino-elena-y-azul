@@ -50,7 +50,7 @@ export const TRADUCCIONES = {
     'home.rapidosAria': 'Agregar ingredientes rápido',
     'home.rapidosTitulo': 'Agregá ingredientes rápidos ✨',
     'home.masComunes': '⭐ Más comunes',
-    'home.heroBadge': '🇦🇷 Cocina argentina y casera · {n} recetas',
+    'home.heroBadge': 'Cocina argentina y casera · {n} recetas',
     'home.queCocino': '¿Qué cocino',
     'home.hoy': 'hoy?',
     'home.heroP1':
@@ -433,7 +433,7 @@ export const TRADUCCIONES = {
     'home.rapidosAria': 'Quick-add ingredients',
     'home.rapidosTitulo': 'Quick-add ingredients ✨',
     'home.masComunes': '⭐ Most common',
-    'home.heroBadge': '🇦🇷 Argentine home cooking · {n} recipes',
+    'home.heroBadge': 'Argentine home cooking · {n} recipes',
     'home.queCocino': 'What should I cook',
     'home.hoy': 'today?',
     'home.heroP1':

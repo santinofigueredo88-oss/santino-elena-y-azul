@@ -7,6 +7,7 @@ import {
   PAIS_POR_ID,
   paisDeReceta,
 } from '../data/recetas.js'
+import BanderaPais from './BanderaPais.jsx'
 import { INGREDIENTE_POR_ID, nombreDeIngrediente } from '../data/ingredientes.js'
 import { normalizarTexto } from '../lib/normalizar.js'
 import {
@@ -38,7 +39,7 @@ function FiltersBar({ filtros, setFiltros, totales }) {
               className={pill(filtros.pais === p.id)}
               onClick={() => setFiltros({ ...filtros, pais: filtros.pais === p.id ? null : p.id })}
             >
-              {p.emoji} {t('pais.' + p.id, null, p.nombre)}
+              <BanderaPais paisId={p.id} tamano="sm" /> {t('pais.' + p.id, null, p.nombre)}
             </button>
           ))}
         </div>
@@ -202,7 +203,7 @@ export default function ResultsView() {
             🌍 {t('home.mundoTitulo')}
           </p>
           <h1 className="mt-1 font-display text-3xl font-black tracking-tight text-stone-900 dark:text-white sm:text-4xl">
-            {pais?.emoji} {t('resultados.cocinaDe', { pais: pais ? t('pais.' + pais.id, null, pais.nombre) : filtros.pais })}
+            <BanderaPais paisId={pais?.id} tamano="lg" /> {t('resultados.cocinaDe', { pais: pais ? t('pais.' + pais.id, null, pais.nombre) : filtros.pais })}
           </h1>
           <p className="mt-1 text-base font-semibold text-stone-500 dark:text-stone-400">
             {tN('resultados.cocinaDeSub', 'resultados.cocinaDeSubPlural', recetasPais.length)}

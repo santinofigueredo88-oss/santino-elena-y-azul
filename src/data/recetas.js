@@ -2363,12 +2363,12 @@ export const RECETA_POR_ID = Object.fromEntries(RECETAS.map((r) => [r.id, r]))
 
 // Países / cocinas del mundo. Las recetas sin `pais` son de Argentina.
 export const PAISES = [
-  { id: 'argentina', nombre: 'Argentina', emoji: '🇦🇷' },
-  { id: 'italia', nombre: 'Italia', emoji: '🇮🇹' },
-  { id: 'mexico', nombre: 'México', emoji: '🇲🇽' },
-  { id: 'japon', nombre: 'Japón', emoji: '🇯🇵' },
-  { id: 'espana', nombre: 'España', emoji: '🇪🇸' },
-  { id: 'reino-unido', nombre: 'Reino Unido', emoji: '🇬🇧' },
+  { id: 'argentina', nombre: 'Argentina', emoji: '🇦🇷', codigo: 'ar' },
+  { id: 'italia', nombre: 'Italia', emoji: '🇮🇹', codigo: 'it' },
+  { id: 'mexico', nombre: 'México', emoji: '🇲🇽', codigo: 'mx' },
+  { id: 'japon', nombre: 'Japón', emoji: '🇯🇵', codigo: 'jp' },
+  { id: 'espana', nombre: 'España', emoji: '🇪🇸', codigo: 'es' },
+  { id: 'reino-unido', nombre: 'Reino Unido', emoji: '🇬🇧', codigo: 'gb' },
 ]
 
 export const PAIS_POR_ID = Object.fromEntries(PAISES.map((p) => [p.id, p]))

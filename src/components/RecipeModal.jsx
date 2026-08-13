@@ -11,7 +11,8 @@ import {
   formatearCantidad,
   compartirPorWhatsApp,
 } from '../lib/share.js'
-import { TIPOS_DE_COMIDA, PAIS_POR_ID, paisDeReceta, nombreDePais } from '../data/recetas.js'
+import { TIPOS_DE_COMIDA, paisDeReceta, nombreDePais } from '../data/recetas.js'
+import BanderaPais from './BanderaPais.jsx'
 import RecipeImage from './RecipeImage.jsx'
 import CocinaBot from './CocinaBot.jsx'
 import CocinaTimer from './CocinaTimer.jsx'
@@ -184,7 +185,7 @@ export default function RecipeModal() {
               <div className="mt-2.5 flex flex-wrap items-center gap-2">
                 {receta.pais && (
                   <span className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-extrabold text-white backdrop-blur">
-                    {PAIS_POR_ID[paisDeReceta(receta)]?.emoji}{' '}
+                    <BanderaPais paisId={paisDeReceta(receta)} tamano="sm" />{' '}
                     {t('pais.' + paisDeReceta(receta), null, nombreDePais(receta))}
                   </span>
                 )}

@@ -2,11 +2,12 @@ import { PROMPT_ANALISIS_COMIDA as PROMPT } from '../src/lib/prompt-comida.js'
 
 export const config = { runtime: 'nodejs', maxDuration: 60 }
 
-// Modelos a probar en orden: primero el configurado (o el más nuevo) y si
-// no está disponible para la capa gratuita (404/403), cae a gemini-2.0-flash.
+// Modelos a probar en orden: los antiguos (2.5-flash, 2.0-flash) ya no
+// están disponibles para cuentas nuevas, así que usamos los actuales.
 const MODELOS = [
-  process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-  'gemini-2.0-flash',
+  process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+  'gemini-3.1-flash-lite',
+  'gemini-flash-latest',
 ]
 
 /** Extrae un objeto JSON del texto del modelo (aguanta fences de markdown). */

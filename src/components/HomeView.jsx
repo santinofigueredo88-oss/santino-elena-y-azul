@@ -17,6 +17,7 @@ import {
 } from '../lib/share.js'
 import RecipeCard from './RecipeCard.jsx'
 import ScanFood from './ScanFood.jsx'
+import BanderaPais from './BanderaPais.jsx'
 
 // Recetas destacadas para mostrar en el inicio cuando todavía no hay ingredientes cargados
 const DESTACADAS = ['panqueques', 'milanesas-de-carne', 'fideos-con-tuco', 'pizza-casera']
@@ -124,39 +125,32 @@ function CocinasDelMundo() {
   const mundiales = PAISES.filter((p) => p.id !== 'argentina')
 
   return (
-    <section
-      aria-label={t('home.mundoAria')}
-      className="mx-auto mt-10 max-w-6xl px-4"
-    >
-      <div className="rounded-3xl bg-gradient-to-br from-green-600 to-lime-500 p-6 shadow-lg shadow-green-600/20 dark:from-green-800 dark:to-lime-900 sm:p-8">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="font-display text-2xl font-black tracking-tight text-white sm:text-3xl">
-              🌍 {t('home.mundoTitulo')}
-            </h2>
-            <p className="mt-1 max-w-xl text-sm font-bold text-green-100">
-              {t('home.mundoSub')}
-            </p>
-          </div>
-        </div>
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+    <section aria-label={t('home.mundoAria')} className="w-full">
+      <div className="rounded-3xl bg-gradient-to-br from-green-600 to-lime-500 p-5 shadow-lg shadow-green-600/20 dark:from-green-800 dark:to-lime-900">
+        <h2 className="font-display text-xl font-black tracking-tight text-white sm:text-2xl">
+          🌍 {t('home.mundoTitulo')}
+        </h2>
+        <p className="mt-1 text-xs font-bold text-green-100">
+          {t('home.mundoSub')}
+        </p>
+        <div className="mt-4 grid grid-cols-2 gap-2.5">
           {mundiales.map((pais) => (
             <button
               key={pais.id}
               onClick={() => irAPais(pais.id)}
-              className="group rounded-2xl bg-white/95 p-4 text-left shadow-sm ring-1 ring-white/50 backdrop-blur transition-all hover:-translate-y-1.5 hover:shadow-xl hover:ring-green-200 dark:bg-stone-900/90 dark:ring-white/5 dark:hover:ring-green-800"
+              className="group rounded-2xl bg-white/95 p-3 text-left shadow-sm ring-1 ring-white/50 backdrop-blur transition-all hover:-translate-y-1 hover:shadow-lg hover:ring-green-200 dark:bg-stone-900/90 dark:ring-white/5 dark:hover:ring-green-800"
             >
               <span
-                className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-3xl shadow-sm ring-1 ring-stone-100 transition-transform group-hover:scale-110 group-hover:rotate-6 dark:bg-stone-800 dark:ring-stone-700"
+                className="grid h-11 w-11 place-items-center rounded-xl bg-white shadow-sm ring-1 ring-stone-100 transition-transform group-hover:scale-110 group-hover:rotate-6 dark:bg-stone-800 dark:ring-stone-700"
                 aria-hidden="true"
               >
-                {pais.emoji}
+                <BanderaPais paisId={pais.id} tamano="lg" />
               </span>
-              <span className="mt-3 block font-display text-lg font-black text-stone-900 dark:text-white">
+              <span className="mt-2 block font-display text-base font-black leading-tight text-stone-900 dark:text-white">
                 {t('pais.' + pais.id, null, pais.nombre)}
               </span>
-              <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-lime-100 px-2.5 py-1 text-xs font-extrabold text-green-800 dark:bg-lime-900/50 dark:text-lime-300">
-                🍽️ {recetasPorPais[pais.id] ?? 0} {t('home.mundoRecetas')}
+              <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-lime-100 px-2 py-0.5 text-[11px] font-extrabold text-green-800 dark:bg-lime-900/50 dark:text-lime-300">
+                🍽️ {recetasPorPais[pais.id] ?? 0}
               </span>
             </button>
           ))}
@@ -265,12 +259,9 @@ function HeroIlustrado({ cantidad }) {
         <span className="animate-float absolute bottom-6 left-[46%] text-3xl opacity-10" style={{ animationDuration: '8.5s', animationDelay: '2s' }}>🧄</span>
       </div>
 
-      <div className="relative mx-auto max-w-3xl px-4 pb-16 pt-16 text-center sm:pt-20">
+      <div className="relative mx-auto max-w-3xl px-4 pb-12 pt-12 text-center sm:pt-16">
         <span className="inline-flex items-center gap-2.5 rounded-full bg-white/80 px-4 py-1.5 text-sm font-extrabold text-green-800 shadow-sm ring-1 ring-green-200 backdrop-blur dark:bg-green-950/60 dark:text-green-200 dark:ring-green-800">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-          </span>
+          <BanderaPais paisId="argentina" tamano="sm" />
           {t('home.heroBadge', { n: cantidad })}
         </span>
         <h1 className="mt-4 font-display text-4xl font-black leading-tight tracking-tight text-stone-900 dark:text-white sm:text-6xl">
@@ -455,8 +446,12 @@ export default function HomeView() {
     <div className="animate-fade-up">
       <HeroIlustrado cantidad={RECETAS.length} />
 
-      {/* Input de ingredientes */}
-      <section className="mx-auto -mt-10 max-w-3xl px-4">
+      {/* Zona principal: columnas por propósito (usa toda la pantalla) */}
+      <div className="mx-auto mt-8 max-w-7xl px-4">
+        <div className="grid items-start gap-6 lg:grid-cols-3">
+          {/* Columna principal: cargar ingredientes y buscar recetas */}
+          <div className="space-y-6 lg:col-span-2">
+            <section className="w-full">
         <form
           onSubmit={manejarSubmit}
           className="relative rounded-3xl bg-white p-4 shadow-lg shadow-green-900/10 ring-1 ring-stone-200/60 dark:bg-stone-900 dark:ring-stone-800 sm:p-6"
@@ -564,23 +559,23 @@ export default function HomeView() {
               </div>
             )}
           </div>
-        </form>
-      </section>
+            </form>
+          </section>
 
-      {/* Cocinas del mundo */}
-      <CocinasDelMundo />
+          <QuickButtons />
+        </div>
 
-      {/* Escáner de comida por foto */}
-      <ScanFood />
-
-      {/* Botones rápidos */}
-      <div className="mx-auto mt-10 max-w-5xl px-4">
-        <QuickButtons />
+        {/* Columna lateral: herramientas rápidas */}
+        <aside className="space-y-6">
+          <ScanFood />
+          <CocinasDelMundo />
+        </aside>
       </div>
+    </div>
 
       {/* Sugerencias en vivo (cuando hay ingredientes) */}
       {sugeridas.length > 0 && (
-        <section className="mx-auto mt-14 max-w-6xl px-4 pb-24">
+        <section className="mx-auto mt-14 max-w-7xl px-4 pb-24">
           <div className="mb-6 flex items-end justify-between gap-3 border-b border-stone-200/70 pb-5 dark:border-stone-800">
             <div>
               <h2 className="font-display text-2xl font-black tracking-tight text-stone-900 dark:text-white sm:text-3xl">
@@ -607,7 +602,7 @@ export default function HomeView() {
 
       {/* Destacadas (solo cuando no hay sugerencias activas) */}
       {sugeridas.length === 0 && (
-        <section className="mx-auto mt-14 max-w-6xl px-4 pb-24">
+        <section className="mx-auto mt-14 max-w-7xl px-4 pb-24">
           <div className="mb-6 flex items-end justify-between gap-3 border-b border-stone-200/70 pb-5 dark:border-stone-800">
             <div>
               <h2 className="font-display text-2xl font-black tracking-tight text-stone-900 dark:text-white sm:text-3xl">

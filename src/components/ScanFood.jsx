@@ -4,7 +4,10 @@ import { leerStorage, escribirStorage } from '../lib/storage.js'
 import { PROMPT_ANALISIS_COMIDA } from '../lib/prompt-comida.js'
 
 const CLAVE_GEMINI = 'que-cocino:gemini-key'
-const MODELO = 'gemini-2.5-flash'
+// Modelos actuales de Gemini (2026): los 2.x ya no están disponibles
+// para cuentas nuevas, el 3.5-flash es el rápido con visión.
+const MODELO = 'gemini-3.5-flash'
+const MODELOS_FALLBACK = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest']
 
 // ---------------------------------------------------------------
 // Compresión de la imagen: la redimensiona a 1024px como máximo y
@@ -45,8 +48,8 @@ async function prepararImagen(file) {
 // ---------------------------------------------------------------
 async function llamarGeminiDirecto(foto, apiKey) {
   // Misma cadena de modelos que la función serverless: si el modelo nuevo
-  // no está disponible para la capa gratuita, cae a gemini-2.0-flash.
-  const modelos = [...new Set([MODELO, 'gemini-2.0-flash'])]
+  // no está disponible, cae al siguiente de la lista.
+  const modelos = [...new Set([MODELO, ...MODELOS_FALLBACK])]
   for (const modelo of modelos) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`
     const res = await fetch(url, {
@@ -234,13 +237,10 @@ export default function ScanFood() {
   }
 
   return (
-    <section
-      aria-label={t('scan.aria')}
-      className="mx-auto mt-10 max-w-5xl px-4"
-    >
+    <section aria-label={t('scan.aria')} className="w-full">
       <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-900 dark:ring-stone-800">
         {/* Encabezado con gradiente */}
-        <div className="bg-gradient-to-r from-green-600 to-lime-500 px-6 py-5 dark:from-green-800 dark:to-lime-900 sm:px-8">
+        <div className="bg-gradient-to-r from-green-600 to-lime-500 px-5 py-4 dark:from-green-800 dark:to-lime-900">
           <h2 className="font-display text-2xl font-black tracking-tight text-white sm:text-3xl">
             {t('scan.titulo')}
           </h2>
@@ -249,7 +249,7 @@ export default function ScanFood() {
           </p>
         </div>
 
-        <div className="p-6 sm:p-8">
+        <div className="p-5">
           {/* ── Sin clave configurada: banner para activar ── */}
           {!clave && !configAbierto && (
             <div className="mb-5 flex flex-col items-start justify-between gap-3 rounded-2xl bg-crema-100 px-4 py-3.5 ring-1 ring-green-200 dark:bg-stone-800 dark:ring-green-900 sm:flex-row sm:items-center">
@@ -336,7 +336,7 @@ export default function ScanFood() {
                 const file = e.dataTransfer.files?.[0]
                 if (file) analizarArchivo(file)
               }}
-              className={`grid cursor-pointer place-items-center rounded-2xl border-2 border-dashed px-6 py-10 text-center transition-all ${
+              className={`grid cursor-pointer place-items-center rounded-2xl border-2 border-dashed px-5 py-8 text-center transition-all ${
                 arrastrando
                   ? 'scale-[1.01] border-green-500 bg-green-50 dark:bg-green-950/40'
                   : 'border-stone-300 bg-crema-50 hover:border-green-400 hover:bg-green-50/60 dark:border-stone-700 dark:bg-stone-800 dark:hover:border-green-700'
@@ -380,7 +380,7 @@ export default function ScanFood() {
 
           {/* ── Analizando… ── */}
           {estado === 'analizando' && (
-            <div className="grid place-items-center rounded-2xl bg-crema-50 px-6 py-12 text-center dark:bg-stone-800">
+            <div className="grid place-items-center rounded-2xl bg-crema-50 px-5 py-10 text-center dark:bg-stone-800">
               <span className="animate-bounce text-6xl" aria-hidden="true">
                 🍳
               </span>
@@ -395,7 +395,7 @@ export default function ScanFood() {
 
           {/* ── Error ── */}
           {estado === 'error' && (
-            <div className="grid place-items-center rounded-2xl bg-red-50 px-6 py-10 text-center ring-1 ring-red-200 dark:bg-red-950/40 dark:ring-red-900">
+            <div className="grid place-items-center rounded-2xl bg-red-50 px-5 py-8 text-center ring-1 ring-red-200 dark:bg-red-950/40 dark:ring-red-900">
               <span className="text-5xl" aria-hidden="true">
                 😅
               </span>
@@ -431,14 +431,14 @@ export default function ScanFood() {
 
           {/* ── Resultado ── */}
           {estado === 'resultado' && resultado && (
-            <div className="grid gap-6 sm:grid-cols-5">
+            <div className="grid gap-5">
               {/* Foto + veredicto */}
-              <div className="sm:col-span-2">
+              <div>
                 <div className="overflow-hidden rounded-2xl ring-1 ring-stone-200 dark:ring-stone-700">
                   <img
                     src={foto?.preview}
                     alt={resultado.plato || ''}
-                    className="h-52 w-full object-cover sm:h-64"
+                    className="h-44 w-full object-cover"
                   />
                 </div>
                 <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -461,9 +461,9 @@ export default function ScanFood() {
               </div>
 
               {/* Detalle */}
-              <div className="sm:col-span-3">
+              <div>
                 {esNoComida ? (
-                  <div className="grid h-full place-items-center rounded-2xl bg-crema-50 px-6 py-10 text-center dark:bg-stone-800">
+                  <div className="grid h-full place-items-center rounded-2xl bg-crema-50 px-5 py-8 text-center dark:bg-stone-800">
                     <span className="text-5xl" aria-hidden="true">
                       🤔
                     </span>
@@ -496,7 +496,7 @@ export default function ScanFood() {
                     <p className="mt-5 text-xs font-extrabold uppercase tracking-wider text-stone-500 dark:text-stone-400">
                       {t('scan.nutri')}
                     </p>
-                    <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    <div className="mt-2 grid grid-cols-2 gap-2">
                       {[
                         { valor: resultado.calorias, label: t('scan.calorias') },
                         { valor: resultado.proteinas, label: t('scan.proteinas') },

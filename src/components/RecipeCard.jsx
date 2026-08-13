@@ -1,11 +1,7 @@
 import { useApp } from '../context/AppContext.jsx'
 import { BASICOS, nombreDeIngrediente } from '../data/ingredientes.js'
-import {
-  TIPOS_DE_COMIDA,
-  PAIS_POR_ID,
-  paisDeReceta,
-  nombreDePais,
-} from '../data/recetas.js'
+import { TIPOS_DE_COMIDA, paisDeReceta, nombreDePais } from '../data/recetas.js'
+import BanderaPais from './BanderaPais.jsx'
 import RecipeImage from './RecipeImage.jsx'
 
 const NIVEL_DIFICULTAD = {
@@ -72,7 +68,7 @@ export default function RecipeCard({ item, onAbrir }) {
               title={t('pais.' + paisDeReceta(receta), null, nombreDePais(receta))}
               className="absolute left-3 top-12 rounded-full bg-black/45 px-2.5 py-1 text-xs font-extrabold text-white backdrop-blur"
             >
-              {PAIS_POR_ID[paisDeReceta(receta)]?.emoji}{' '}
+              <BanderaPais paisId={paisDeReceta(receta)} tamano="sm" />{' '}
               {t('pais.' + paisDeReceta(receta), null, nombreDePais(receta))}
             </span>
           )}

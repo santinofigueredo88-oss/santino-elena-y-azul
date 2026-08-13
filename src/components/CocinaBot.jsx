@@ -416,11 +416,11 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-green-600 text-sm font-black text-white shadow-sm">
                   {m.numero}
                 </span>
-                <span className="text-xs font-black uppercase tracking-wide text-stone-400">
+                <span className="text-xs font-black uppercase tracking-wide text-stone-500">
                   {t('bot.pasoLabel', { a: m.numero, b: m.total })}
                 </span>
               </div>
-              <div className="mt-1.5 ml-4 max-w-[85%] rounded-2xl rounded-tl-md bg-white px-4 py-3 text-[15px] font-semibold leading-relaxed text-stone-800 shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-800 dark:text-stone-100 dark:ring-stone-700">
+              <div className="mt-1.5 ml-4 max-w-[85%] rounded-2xl rounded-tl-md bg-crema-50 px-4 py-3 text-[15px] font-semibold leading-relaxed text-stone-800 shadow-sm ring-1 ring-stone-200/70 dark:bg-stone-800 dark:text-stone-100 dark:ring-stone-700">
                 {m.texto}
               </div>
             </div>
@@ -429,7 +429,7 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
               <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-crema-100 text-base dark:bg-stone-800" aria-hidden="true">
                 👨‍🍳
               </span>
-              <div className="max-w-[85%] whitespace-pre-line rounded-2xl rounded-tl-md bg-white px-4 py-3 text-[15px] font-semibold leading-relaxed text-stone-700 shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-800 dark:text-stone-200 dark:ring-stone-700">
+              <div className="max-w-[85%] whitespace-pre-line rounded-2xl rounded-tl-md bg-crema-50 px-4 py-3 text-[15px] font-semibold leading-relaxed text-stone-700 shadow-sm ring-1 ring-stone-200/70 dark:bg-stone-800 dark:text-stone-200 dark:ring-stone-700">
                 {m.texto}
               </div>
             </div>
@@ -441,7 +441,7 @@ export default function CocinaBot({ receta, idsIngredientes, porciones, onCerrar
             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-crema-100 text-base dark:bg-stone-800" aria-hidden="true">
               👨‍🍳
             </span>
-            <div className="flex gap-1.5 rounded-2xl rounded-tl-md bg-white px-4 py-3.5 shadow-sm ring-1 ring-stone-200/60 dark:bg-stone-800 dark:ring-stone-700">
+            <div className="flex gap-1.5 rounded-2xl rounded-tl-md bg-crema-50 px-4 py-3.5 shadow-sm ring-1 ring-stone-200/70 dark:bg-stone-800 dark:ring-stone-700">
               <span className="h-2 w-2 animate-bounce rounded-full bg-stone-300 dark:bg-stone-500" style={{ animationDelay: '0ms' }} />
               <span className="h-2 w-2 animate-bounce rounded-full bg-stone-300 dark:bg-stone-500" style={{ animationDelay: '120ms' }} />
               <span className="h-2 w-2 animate-bounce rounded-full bg-stone-300 dark:bg-stone-500" style={{ animationDelay: '240ms' }} />

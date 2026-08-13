@@ -42,6 +42,25 @@ const TDB = {
   'sticky-toffee-pudding': 'xqqqtu1511637379.jpg',
   'toad-in-the-hole': 'ytuvwr1503070420.jpg',
   'yorkshire-puddings': 'x5qz5k1761595900.jpg',
+  'osso-buco': 'wwuqvt1487345467.jpg',
+  'cannelloni-espinaca-ricota': 'wspuvp1511303478.jpg',
+  ribollita: 'xrrwpx1487347049.jpg',
+  'risotto-salmón': 'xxrxux1503070723.jpg',
+  'ensalada-pasta-mediterranea': 'wvqpwt1468339226.jpg',
+  'katsu-curry': 'vwrpps1503068729.jpg',
+  'teriyaki-salmón': 'xxyupu1468262513.jpg',
+  fideua: 'wqqvyq1511179730.jpg',
+  'crema-catalana': 'x73ll91763247842.jpg',
+  'croquetas-jamon': '6dpa7m1763331105.jpg',
+  'pimientos-padron': '0ljvc51763248075.jpg',
+  'ajo-blanco': '5jdtie1763289302.jpg',
+  ensaimada: '1ugsho1763248007.jpg',
+  'crumble-manzana-mora': 'xvsurr1511719182.jpg',
+  'sunday-roast': 'ssrrrs1503664277.jpg',
+  kedgeree: 'utxqpt1511639216.jpg',
+  'hotpot-lancashire': 'uttrxw1511637813.jpg',
+  'bread-butter-pudding': 'xqwwpy1483908697.jpg',
+  'eton-mess': 'uuxwvq1483907861.jpg',
 }
 
 // ---- Fotos Wikimedia (recetas argentinas) ----
@@ -146,6 +165,14 @@ const WIKI = {
   locro: ['Locro', 'Locro_argentino'],
   'budin-de-vainilla': ['Budín', 'Pound_cake'],
   'huevos-con-panceta': ['Bacon', 'Bacon_and_eggs'],
+  guacamole: ['Guacamole', 'Guacamole_(10-17-20)'],
+  'burritos-carne': ['Burrito', 'Burrito.JPG'],
+  nachos: ['Nachos', 'Nachos_grande.jpg'],
+  'chiles-rellenos': ['Chile_relleno', 'Chiles_rellenos'],
+  'quesadillas-pollo': ['Quesadilla', 'Quesadilla_con_queso.jpg'],
+  'ramen-pollo': ['Ramen', 'Shoyu_ramen%2C_ussayama%2C_amakusa%2C_kumamoto.jpg'],
+  gyozas: ['Gyoza', 'Jiaozi.jpg'],
+  okonomiyaki: ['Okonomiyaki', 'Okonomiyaki_001.jpg'],
 }
 
 async function verificar(url) {

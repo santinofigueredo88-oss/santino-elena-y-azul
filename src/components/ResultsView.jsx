@@ -23,14 +23,14 @@ function FiltersBar({ filtros, setFiltros, totales }) {
   const pill = (activo) =>
     `rounded-full px-3.5 py-2 text-sm font-bold transition-all ${
       activo
-        ? 'bg-stone-900 text-white dark:bg-white dark:text-stone-900'
-        : 'bg-white text-stone-600 ring-1 ring-stone-200 hover:bg-crema-100 dark:bg-stone-800 dark:text-stone-300 dark:ring-stone-700 dark:hover:bg-stone-700'
+        ? 'bg-stone-900 text-white shadow-md dark:bg-white dark:text-stone-900'
+        : 'bg-crema-100 text-stone-700 ring-1 ring-stone-300/70 hover:bg-green-100 hover:text-green-800 hover:ring-green-300 dark:bg-stone-800 dark:text-stone-300 dark:ring-stone-700 dark:hover:bg-stone-700'
     }`
 
   return (      <div className="flex flex-col gap-3">
         {/* País / cocina */}
         <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('filtros.ariaPais')}>
-          <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-400 dark:text-stone-500">{t('filtros.pais')}</span>
+          <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-500 dark:text-stone-400">{t('filtros.pais')}</span>
           <button className={pill(!filtros.pais)} onClick={() => setFiltros({ ...filtros, pais: null })}>{t('filtros.todos')}</button>
           {PAISES.map((p) => (
             <button
@@ -43,7 +43,7 @@ function FiltersBar({ filtros, setFiltros, totales }) {
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('filtros.ariaTipo')}>
-        <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-400 dark:text-stone-500">{t('filtros.tipo')}</span>
+        <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-500 dark:text-stone-400">{t('filtros.tipo')}</span>
         <button className={pill(!filtros.tipo)} onClick={() => setFiltros({ ...filtros, tipo: null })}>{t('filtros.todos')}</button>
         {TIPOS_DE_COMIDA.map((t) => (
           <button
@@ -56,14 +56,14 @@ function FiltersBar({ filtros, setFiltros, totales }) {
         ))}
       </div>
       <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('filtros.ariaTiempo')}>
-        <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-400 dark:text-stone-500">{t('filtros.tiempo')}</span>
+        <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-500 dark:text-stone-400">{t('filtros.tiempo')}</span>
         <button className={pill(!filtros.tiempo)} onClick={() => setFiltros({ ...filtros, tiempo: null })}>{t('filtros.todos')}</button>
         <button className={pill(filtros.tiempo === 'rapido')} onClick={() => setFiltros({ ...filtros, tiempo: filtros.tiempo === 'rapido' ? null : 'rapido' })}>⚡ &lt; 20 min</button>
         <button className={pill(filtros.tiempo === 'medio')} onClick={() => setFiltros({ ...filtros, tiempo: filtros.tiempo === 'medio' ? null : 'medio' })}>🕐 20–45 min</button>
         <button className={pill(filtros.tiempo === 'largo')} onClick={() => setFiltros({ ...filtros, tiempo: filtros.tiempo === 'largo' ? null : 'largo' })}>🐢 &gt; 45 min</button>
       </div>
       <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('filtros.ariaDificultad')}>
-        <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-400 dark:text-stone-500">{t('filtros.dificultad')}</span>
+        <span className="mr-1 text-xs font-black uppercase tracking-wider text-stone-500 dark:text-stone-400">{t('filtros.dificultad')}</span>
         <button className={pill(!filtros.dificultad)} onClick={() => setFiltros({ ...filtros, dificultad: null })}>{t('filtros.todas')}</button>
         <button className={pill(filtros.dificultad === 'facil')} onClick={() => setFiltros({ ...filtros, dificultad: filtros.dificultad === 'facil' ? null : 'facil' })}>🙂 {t('dificultad.facil')}</button>
         <button className={pill(filtros.dificultad === 'media')} onClick={() => setFiltros({ ...filtros, dificultad: filtros.dificultad === 'media' ? null : 'media' })}>😌 {t('dificultad.media')}</button>
@@ -318,7 +318,7 @@ export default function ResultsView() {
             {ingredientes.map((i) => (
               <span
                 key={i.id}
-                className="rounded-full bg-white px-3 py-1 text-xs font-bold text-stone-600 ring-1 ring-stone-200 dark:bg-stone-900 dark:text-stone-300 dark:ring-stone-700"
+                className="rounded-full bg-white px-3 py-1 text-xs font-bold text-stone-700 ring-1 ring-stone-300 dark:bg-stone-900 dark:text-stone-300 dark:ring-stone-700"
               >
                 {i.nombre}
               </span>

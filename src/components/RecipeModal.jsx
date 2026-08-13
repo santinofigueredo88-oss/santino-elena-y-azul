@@ -36,7 +36,7 @@ function Stepper({ porciones, setPorciones }) {
       </button>
       <span className="min-w-16 px-2 text-center">
         <span className="block text-lg font-black leading-none text-stone-900 dark:text-white">{porciones}</span>
-        <span className="block text-[10px] font-bold uppercase text-stone-400">{t('modal.porc')}</span>
+        <span className="block text-[10px] font-bold uppercase text-stone-500">{t('modal.porc')}</span>
       </span>
       <button
         onClick={() => setPorciones((p) => Math.min(12, p + 1))}
@@ -232,7 +232,7 @@ export default function RecipeModal() {
             </button>
 
             {/* Porciones */}
-            <div className="mb-5 flex flex-col items-start gap-2 rounded-2xl bg-crema-50 p-4 dark:bg-stone-800 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-5 flex flex-col items-start gap-2 rounded-2xl bg-crema-50 p-4 ring-1 ring-stone-200/70 dark:bg-stone-800 dark:ring-stone-700 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-extrabold text-stone-900 dark:text-white">{t('modal.ajustar')}</p>
                 <p className="text-sm font-semibold text-stone-500 dark:text-stone-400">
@@ -260,7 +260,7 @@ export default function RecipeModal() {
             {/* Ingredientes */}
             <h3 className="text-xl font-black text-stone-900 dark:text-white">
               {t('modal.ingredientes')}{' '}
-              <span className="text-sm font-bold text-stone-400">
+              <span className="text-sm font-bold text-stone-500">
                 {tN('modal.paraPersona', 'modal.paraPersonas', porciones)}
               </span>
             </h3>

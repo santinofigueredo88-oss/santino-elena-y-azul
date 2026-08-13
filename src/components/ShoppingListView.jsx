@@ -145,7 +145,7 @@ export default function ShoppingListView() {
 
       {comprados.length > 0 && (
         <>
-          <h2 className="mt-8 text-sm font-black uppercase tracking-wider text-stone-400">
+          <h2 className="mt-8 text-sm font-black uppercase tracking-wider text-stone-500">
             {t('lista.yaTenes')}
           </h2>
           <div className="mt-3 flex flex-col gap-2">

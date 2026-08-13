@@ -93,7 +93,7 @@ export default function CocinaTimer() {
   const terminado = minutos !== null && segundos === 0
 
   return (
-    <div className="mt-6 overflow-hidden rounded-2xl bg-crema-50 ring-1 ring-stone-200/70 dark:bg-stone-800 dark:ring-stone-700">
+    <div className="mt-6 overflow-hidden rounded-2xl bg-crema-50 ring-1 ring-stone-200 dark:bg-stone-800 dark:ring-stone-700">
       <button
         onClick={() => setAbierto(!abierto)}
         aria-expanded={abierto}
@@ -157,7 +157,7 @@ export default function CocinaTimer() {
                   <button
                     key={min}
                     onClick={() => elegir(min)}
-                    className="rounded-xl bg-white px-4 py-2 text-sm font-extrabold text-stone-700 ring-1 ring-stone-200 transition-all hover:-translate-y-0.5 hover:bg-green-600 hover:text-white hover:ring-green-600 hover:shadow-md dark:bg-stone-900 dark:text-stone-200 dark:ring-stone-600 dark:hover:bg-green-600 dark:hover:text-white"
+                    className="rounded-xl bg-white px-4 py-2 text-sm font-extrabold text-stone-700 ring-1 ring-stone-300 transition-all hover:-translate-y-0.5 hover:bg-green-600 hover:text-white hover:ring-green-600 hover:shadow-md dark:bg-stone-900 dark:text-stone-200 dark:ring-stone-600 dark:hover:bg-green-600 dark:hover:text-white"
                   >
                     {min} min
                   </button>
@@ -182,7 +182,7 @@ export default function CocinaTimer() {
                 </button>
                 <button
                   onClick={reiniciar}
-                  className="rounded-xl bg-white px-5 py-2.5 text-sm font-extrabold text-stone-600 ring-1 ring-stone-200 transition-colors hover:bg-stone-100 dark:bg-stone-900 dark:text-stone-300 dark:ring-stone-600 dark:hover:bg-stone-700"
+                  className="rounded-xl bg-white px-5 py-2.5 text-sm font-extrabold text-stone-700 ring-1 ring-stone-300 transition-colors hover:bg-stone-100 dark:bg-stone-900 dark:text-stone-300 dark:ring-stone-600 dark:hover:bg-stone-700"
                 >
                   {t('modal.timerReiniciar')}
                 </button>

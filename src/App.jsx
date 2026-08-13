@@ -11,10 +11,10 @@ function Footer() {
   const { t } = useApp()
   return (
     <footer className="mt-auto border-t border-stone-200/70 bg-crema-100/60 py-8 text-center dark:border-stone-800 dark:bg-stone-900/40">
-      <p className="text-sm font-black text-stone-500 dark:text-stone-400">
+      <p className="text-sm font-black text-stone-600 dark:text-stone-400">
         {t('footer.tagline')}
       </p>
-      <p className="mt-1 text-xs font-semibold text-stone-400 dark:text-stone-500">
+      <p className="mt-1 text-xs font-semibold text-stone-500 dark:text-stone-500">
         {t('footer.recetas', { n: RECETAS.length })}
       </p>
     </footer>

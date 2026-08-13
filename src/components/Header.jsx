@@ -29,10 +29,10 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-stone-200/70 bg-crema-50/90 backdrop-blur-md dark:border-stone-800 dark:bg-stone-950/90">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+      <div className="mx-auto flex max-w-6xl flex-col gap-2.5 px-4 py-3 md:flex-row md:items-center md:justify-between md:gap-3">
         <button
           onClick={() => irA('inicio')}
-          className="flex items-center gap-2 text-left"
+          className="flex shrink-0 items-center gap-2 text-left"
           aria-label={t('header.irInicio')}
         >
           <span
@@ -46,13 +46,16 @@ export default function Header() {
             <span className="block text-lg font-black tracking-tight text-stone-900 dark:text-white">
               ¿Qué Cocino?
             </span>
-            <span className="block text-xs font-semibold text-stone-500 dark:text-stone-400">
+            <span className="hidden text-xs font-semibold text-stone-500 dark:text-stone-400 md:block">
               {t('header.tagline')}
             </span>
           </span>
         </button>
 
-        <nav className="flex items-center gap-1 overflow-x-auto sm:gap-2" aria-label={t('header.navAria')}>
+        <nav
+          className="flex items-center gap-1 overflow-x-auto pb-1 sm:gap-2 md:w-auto md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          aria-label={t('header.navAria')}
+        >
           {NAV.map((item) => {
             const activo = vista === item.id
             const conteo = contadorPara(item.id, { listaCompras, favoritos })

@@ -90,7 +90,7 @@ function ChipsList() {
         return (
           <span
             key={ing.id}
-            className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-white py-1.5 pl-3 pr-1.5 text-sm font-bold text-stone-800 shadow-sm dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+            className="inline-flex items-center gap-2 rounded-full border border-green-300 bg-white py-1.5 pl-3 pr-1.5 text-sm font-bold text-stone-800 shadow-sm dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
           >
             <span aria-hidden="true">{emoji}</span>
             {ing.nombre}
@@ -187,7 +187,7 @@ function QuickButtons() {
           className={`rounded-full px-4 py-2 text-sm font-bold transition-all ${
             categoria === 'rapidos'
               ? 'bg-green-600 text-white shadow-md shadow-green-600/25'
-              : 'bg-crema-100 text-stone-600 hover:bg-green-100 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'
+              : 'bg-crema-100 text-stone-700 ring-1 ring-stone-200/70 hover:bg-green-100 hover:text-green-800 dark:bg-stone-800 dark:text-stone-300 dark:ring-stone-700 dark:hover:bg-stone-700'
           }`}
         >
           {t('home.masComunes')}
@@ -200,7 +200,7 @@ function QuickButtons() {
             className={`rounded-full px-4 py-2 text-sm font-bold transition-all ${
               categoria === cat.id
                 ? 'bg-green-600 text-white shadow-md shadow-green-600/25'
-                : 'bg-crema-100 text-stone-600 hover:bg-green-100 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'
+                : 'bg-crema-100 text-stone-700 ring-1 ring-stone-200/70 hover:bg-green-100 hover:text-green-800 dark:bg-stone-800 dark:text-stone-300 dark:ring-stone-700 dark:hover:bg-stone-700'
             }`}
           >
             {cat.emoji} {t('categoria.' + cat.id, null, cat.nombre)}
@@ -219,7 +219,7 @@ function QuickButtons() {
               className={`rounded-xl border px-3.5 py-2.5 text-sm font-bold transition-all ${
                 agregado
                   ? 'cursor-default border-green-300 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300'
-                  : 'border-stone-200 bg-crema-50 text-stone-700 hover:-translate-y-0.5 hover:border-green-300 hover:bg-green-50 hover:text-green-700 hover:shadow-md dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200 dark:hover:border-green-700 dark:hover:bg-stone-700 dark:hover:text-green-300'
+                  : 'border-stone-300 bg-crema-100 text-stone-800 hover:-translate-y-0.5 hover:border-green-300 hover:bg-green-50 hover:text-green-700 hover:shadow-md dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200 dark:hover:border-green-700 dark:hover:bg-stone-700 dark:hover:text-green-300'
               }`}
             >
               {agregado ? '✅ ' : ''}
@@ -512,7 +512,7 @@ export default function HomeView() {
                 onClick={abrirSorpresa}
                 aria-label={t('home.sorpresaAria')}
                 title={t('home.sorpresa')}
-                className="grid h-[54px] w-[54px] place-items-center rounded-2xl bg-white text-2xl ring-1 ring-stone-200 transition-all hover:-translate-y-0.5 hover:bg-lime-100 hover:ring-lime-300 dark:bg-stone-800 dark:ring-stone-700 dark:hover:bg-stone-700"
+                className="grid h-[54px] w-[54px] place-items-center rounded-2xl bg-crema-50 text-2xl ring-1 ring-stone-300 transition-all hover:-translate-y-0.5 hover:bg-lime-100 hover:ring-lime-300 dark:bg-stone-800 dark:ring-stone-700 dark:hover:bg-stone-700"
               >
                 🎲
               </button>
@@ -525,7 +525,7 @@ export default function HomeView() {
                     className={`rounded-2xl px-4 py-3.5 text-sm font-extrabold transition-all ${
                       copiadoLink
                         ? 'bg-green-100 text-green-700 ring-1 ring-green-300 dark:bg-green-900/50 dark:text-green-200 dark:ring-green-700'
-                        : 'bg-white text-stone-600 ring-1 ring-stone-200 hover:-translate-y-0.5 hover:bg-green-50 hover:text-green-700 hover:ring-green-300 dark:bg-stone-800 dark:text-stone-200 dark:ring-stone-700 dark:hover:bg-stone-700'
+                        : 'bg-crema-50 text-stone-700 ring-1 ring-stone-300 hover:-translate-y-0.5 hover:bg-green-50 hover:text-green-700 hover:ring-green-300 dark:bg-stone-800 dark:text-stone-200 dark:ring-stone-700 dark:hover:bg-stone-700'
                     }`}
                   >
                     {copiadoLink ? t('home.linkCopiado') : t('home.compartirIng')}

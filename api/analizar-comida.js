@@ -1,18 +1,13 @@
-// ============================================================
-// Función serverless de Vercel: "Escaneá tu comida" 📸
-// Recibe una foto base64, la manda a Google Gemini (modelo de
-// visión) y devuelve el plato, nutrientes aproximados y
-// beneficios para la salud en JSON.
-//
-// La clave de Gemini puede venir de:
-//   - La variable de entorno GEMINI_API_KEY (recomendado)
-//   - El body de la request (clave del usuario, guardada en su
-//     navegador) — así funciona sin configurar nada en Vercel.
-// ============================================================
-
 import { PROMPT_ANALISIS_COMIDA as PROMPT } from '../src/lib/prompt-comida.js'
 
-export const config = { runtime: 'nodejs' }
+export const config = { runtime: 'nodejs', maxDuration: 60 }
+
+// Modelos a probar en orden: primero el configurado (o el más nuevo) y si
+// no está disponible para la capa gratuita (404/403), cae a gemini-2.0-flash.
+const MODELOS = [
+  process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+  'gemini-2.0-flash',
+]
 
 /** Extrae un objeto JSON del texto del modelo (aguanta fences de markdown). */
 function extraerJson(texto) {
@@ -67,64 +62,77 @@ export default async function handler(req, res) {
       .json({ error: 'imagen-invalida', message: 'La imagen no es válida' })
   }
 
-  const modelo = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
+  const modelos = [...new Set(MODELOS)].filter(Boolean)
+  let ultimoError = 'No se pudo analizar la imagen'
 
-  try {
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': clave,
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                { text: PROMPT },
-                { inline_data: { mime_type: mimeType, data: imageBase64 } },
-              ],
-            },
-          ],
-          generationConfig: {
-            responseMimeType: 'application/json',
-            temperature: 0.3,
+  for (const modelo of modelos) {
+    try {
+      const r = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': clave,
           },
-        }),
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  { text: PROMPT },
+                  { inline_data: { mime_type: mimeType, data: imageBase64 } },
+                ],
+              },
+            ],
+            generationConfig: {
+              responseMimeType: 'application/json',
+              temperature: 0.3,
+            },
+          }),
+        }
+      )
+
+      const data = await r.json().catch(() => ({}))
+
+      if (r.ok) {
+        const texto =
+          data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+        const json = extraerJson(texto)
+        if (!json) {
+          return res
+            .status(502)
+            .json({ error: 'formato', message: 'No se pudo interpretar la respuesta' })
+        }
+        return res.status(200).json({ ok: true, ...json })
       }
-    )
 
-    const data = await r.json().catch(() => ({}))
-
-    if (!r.ok) {
       const mensaje =
         data?.error?.message ?? `Error de Gemini (HTTP ${r.status})`
+
+      // 429 = cuota agotada: no tiene sentido probar otro modelo.
       if (r.status === 429) {
         return res
           .status(429)
           .json({ error: 'limite', message: 'Cuota gratuita agotada' })
       }
+      // 400 = clave inválida: tampoco depende del modelo.
       if (r.status === 400) {
         return res
           .status(400)
           .json({ error: 'clave-invalida', message: mensaje })
       }
+      // 404/403 = modelo no disponible en este plan: probamos el siguiente.
+      if (r.status === 404 || r.status === 403) {
+        ultimoError = mensaje
+        continue
+      }
+
       return res.status(502).json({ error: 'gemini', message: mensaje })
+    } catch (e) {
+      ultimoError = e.message
+      continue
     }
-
-    const texto =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-    const json = extraerJson(texto)
-
-    if (!json) {
-      return res
-        .status(502)
-        .json({ error: 'formato', message: 'No se pudo interpretar la respuesta' })
-    }
-
-    return res.status(200).json({ ok: true, ...json })
-  } catch (e) {
-    return res.status(500).json({ error: 'servidor', message: e.message })
   }
+
+  return res.status(502).json({ error: 'gemini', message: ultimoError })
 }

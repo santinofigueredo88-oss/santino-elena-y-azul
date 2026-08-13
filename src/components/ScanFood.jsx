@@ -44,37 +44,44 @@ async function prepararImagen(file) {
 // cuando la función serverless no está disponible en localhost).
 // ---------------------------------------------------------------
 async function llamarGeminiDirecto(foto, apiKey) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODELO}:generateContent`
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-goog-api-key': apiKey,
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            { text: PROMPT_ANALISIS_COMIDA },
-            { inline_data: { mime_type: foto.mimeType, data: foto.base64 } },
-          ],
-        },
-      ],
-      generationConfig: { responseMimeType: 'application/json', temperature: 0.3 },
-    }),
-  })
-  if (!res.ok) {
+  // Misma cadena de modelos que la función serverless: si el modelo nuevo
+  // no está disponible para la capa gratuita, cae a gemini-2.0-flash.
+  const modelos = [...new Set([MODELO, 'gemini-2.0-flash'])]
+  for (const modelo of modelos) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              { text: PROMPT_ANALISIS_COMIDA },
+              { inline_data: { mime_type: foto.mimeType, data: foto.base64 } },
+            ],
+          },
+        ],
+        generationConfig: { responseMimeType: 'application/json', temperature: 0.3 },
+      }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+      try {
+        return { ok: true, ...JSON.parse(texto.replace(/```(?:json)?/gi, '').trim()) }
+      } catch {
+        return { ok: false, error: 'formato' }
+      }
+    }
     if (res.status === 429) return { ok: false, error: 'limite' }
     if (res.status === 400) return { ok: false, error: 'clave-invalida' }
+    if (res.status === 404 || res.status === 403) continue // probamos el siguiente
     return { ok: false, error: 'gemini' }
   }
-  const data = await res.json()
-  const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-  try {
-    return { ok: true, ...JSON.parse(texto.replace(/```(?:json)?/gi, '').trim()) }
-  } catch {
-    return { ok: false, error: 'formato' }
-  }
+  return { ok: false, error: 'gemini' }
 }
 
 // Primero intenta la función serverless de Vercel; si no existe (modo
@@ -116,6 +123,7 @@ export default function ScanFood() {
   const [foto, setFoto] = useState(null) // { preview }
   const [resultado, setResultado] = useState(null)
   const [mensajeError, setMensajeError] = useState('')
+  const [detalleError, setDetalleError] = useState('')
   const [clave, setClave] = useState(() => leerStorage(CLAVE_GEMINI, ''))
   const [textoClave, setTextoClave] = useState('')
   const [configAbierto, setConfigAbierto] = useState(false)
@@ -148,6 +156,7 @@ export default function ScanFood() {
     async (file) => {
       if (!file || !file.type.startsWith('image/')) {
         setMensajeError(t('scan.errorImg'))
+        setDetalleError('')
         setEstado('error')
         return
       }
@@ -156,6 +165,7 @@ export default function ScanFood() {
         img = await prepararImagen(file)
       } catch {
         setMensajeError(t('scan.errorImg'))
+        setDetalleError('')
         setEstado('error')
         return
       }
@@ -170,6 +180,7 @@ export default function ScanFood() {
         setEstado('resultado')
       } else {
         setMensajeError(mensajeDeError(data.error))
+        setDetalleError(data.message || '')
         setEstado('error')
         if (data.error === 'sin-clave') setConfigAbierto(true)
       }
@@ -391,6 +402,11 @@ export default function ScanFood() {
               <p className="mt-3 text-lg font-extrabold text-red-700 dark:text-red-300">
                 {mensajeError}
               </p>
+              {detalleError && (
+                <p className="mt-2 max-w-md break-words text-xs font-semibold text-red-500/80 dark:text-red-400/80">
+                  {detalleError}
+                </p>
+              )}
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 <button
                   type="button"

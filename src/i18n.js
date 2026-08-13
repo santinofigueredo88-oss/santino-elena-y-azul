@@ -99,6 +99,61 @@ export const TRADUCCIONES = {
     'resultados.cocinaDeSub': '{n} receta típica para descubrir.',
     'resultados.cocinaDeSubPlural': '{n} recetas típicas para descubrir.',
 
+    // ---- Escáner de comida ----
+    'scan.aria': 'Escaneá tu comida',
+    'scan.titulo': '📸 Escaneá tu comida',
+    'scan.sub':
+      'Subí una foto de lo que estás por comer y te contamos qué es, sus nutrientes aproximados y en qué te beneficia.',
+    'scan.subir': 'Subí una foto de tu comida',
+    'scan.subirBoton': '📷 Subir foto',
+    'scan.camara': '📸 Sacar foto',
+    'scan.dragHint': 'o arrastrá una imagen acá',
+    'scan.analizando': 'Analizando tu comida…',
+    'scan.analizandoSub': 'Nuestro nutricionista virtual la está mirando 👀',
+    'scan.reintentar': '🔄 Reintentar',
+    'scan.otra': '🔄 Escanear otra foto',
+    'scan.noComida': 'No parece comida lo que hay en la foto. Probá con un plato más claro.',
+    'scan.errorImg': 'No se pudo leer esa imagen. Probá con otra foto.',
+    'scan.errorRed':
+      'No se pudo conectar con el servicio de análisis. Revisá tu internet y volvé a intentar.',
+    'scan.errorLimite':
+      'Alcanzamos el límite de análisis por ahora. Esperá unos minutos y volvé a intentar.',
+    'scan.errorClave':
+      'Falta configurar la clave de IA para analizar fotos. Configurala abajo y listo.',
+    'scan.errorClaveInvalida':
+      'La clave no es válida. Revisala o generá una nueva en aistudio.google.com/apikey.',
+    'scan.errorGenerico': 'Ups, algo salió mal. Volvé a intentar.',
+    'scan.nutri': 'Nutrientes aprox. por porción',
+    'scan.calorias': 'kcal',
+    'scan.proteinas': 'g de proteínas',
+    'scan.carbohidratos': 'g de carbohidratos',
+    'scan.grasas': 'g de grasas',
+    'scan.beneficios': '✨ En qué te beneficia',
+    'scan.ingredientes': '🧺 Ingredientes detectados',
+    'scan.usar': '➕ Usar estos ingredientes',
+    'scan.veredicto.saludable': '🥗 Saludable',
+    'scan.veredicto.equilibrado': '⚖️ Equilibrado',
+    'scan.veredicto.ocasional': '🍩 Ocasional',
+    'scan.claveBanner':
+      'Para analizar fotos con IA necesitás una clave gratuita de Google. Tardás 1 minuto.',
+    'scan.claveConfigurar': '🔑 Configurar ahora',
+    'scan.claveTitulo': '🔑 Activá el escáner (una sola vez)',
+    'scan.claveCerrar': 'Cerrar configuración',
+    'scan.claveSub':
+      'La clave es gratuita, no pide tarjeta y se guarda solo en tu navegador:',
+    'scan.clavePaso1': 'Andá a aistudio.google.com y entrá con tu cuenta de Google.',
+    'scan.clavePaso2': 'Tocá "Get API key" → "Create API key".',
+    'scan.clavePaso3': 'Copiá la clave y pegala acá abajo:',
+    'scan.claveLink': '🔗 Abrir aistudio.google.com/apikey',
+    'scan.clavePlaceholder': 'Pegá tu clave acá (ej: AIza…)',
+    'scan.claveGuardar': '💾 Guardar clave',
+    'scan.claveGuardada': '✅ ¡Clave guardada! Ya podés escanear.',
+    'scan.claveQuitar': 'Quitar clave',
+    'scan.claveNota':
+      'La clave se guarda en tu dispositivo, solo se usa para analizar tus fotos.',
+    'scan.disclaimer':
+      'Análisis estimado con IA · no reemplaza el consejo de un profesional de la salud.',
+
     // ---- Filtro por país ----
     'filtros.ariaPais': 'Filtrar por país o cocina',
     'filtros.pais': 'País',
@@ -426,6 +481,62 @@ export const TRADUCCIONES = {
     'resultados.cocinaDe': '{pais} cuisine',
     'resultados.cocinaDeSub': '{n} typical recipe to discover.',
     'resultados.cocinaDeSubPlural': '{n} typical recipes to discover.',
+
+    // ---- Food scanner ----
+    'scan.aria': 'Scan your food',
+    'scan.titulo': '📸 Scan your food',
+    'scan.sub':
+      'Upload a photo of what you are about to eat and we will tell you what it is, its approximate nutrients and how it benefits you.',
+    'scan.subir': 'Upload a photo of your food',
+    'scan.subirBoton': '📷 Upload photo',
+    'scan.camara': '📸 Take photo',
+    'scan.dragHint': 'or drag an image here',
+    'scan.analizando': 'Analyzing your food…',
+    'scan.analizandoSub': 'Our virtual nutritionist is looking at it 👀',
+    'scan.reintentar': '🔄 Try again',
+    'scan.otra': '🔄 Scan another photo',
+    'scan.noComida':
+      'That does not look like food. Try a clearer photo of a dish.',
+    'scan.errorImg': 'Could not read that image. Try another photo.',
+    'scan.errorRed':
+      'Could not reach the analysis service. Check your internet and try again.',
+    'scan.errorLimite':
+      'We hit the analysis limit for now. Wait a few minutes and try again.',
+    'scan.errorClave':
+      'The AI key needed to analyze photos is not set. Configure it below and you are set.',
+    'scan.errorClaveInvalida':
+      'The key is not valid. Check it or create a new one at aistudio.google.com/apikey.',
+    'scan.errorGenerico': 'Oops, something went wrong. Try again.',
+    'scan.nutri': 'Approx. nutrients per serving',
+    'scan.calorias': 'kcal',
+    'scan.proteinas': 'g protein',
+    'scan.carbohidratos': 'g carbs',
+    'scan.grasas': 'g fat',
+    'scan.beneficios': '✨ How it benefits you',
+    'scan.ingredientes': '🧺 Detected ingredients',
+    'scan.usar': '➕ Use these ingredients',
+    'scan.veredicto.saludable': '🥗 Healthy',
+    'scan.veredicto.equilibrado': '⚖️ Balanced',
+    'scan.veredicto.ocasional': '🍩 Occasional',
+    'scan.claveBanner':
+      'To analyze photos with AI you need a free Google key. It takes 1 minute.',
+    'scan.claveConfigurar': '🔑 Set it up now',
+    'scan.claveTitulo': '🔑 Activate the scanner (one time)',
+    'scan.claveCerrar': 'Close settings',
+    'scan.claveSub':
+      'The key is free, no credit card needed, and it is stored only in your browser:',
+    'scan.clavePaso1': 'Go to aistudio.google.com and sign in with your Google account.',
+    'scan.clavePaso2': 'Tap "Get API key" → "Create API key".',
+    'scan.clavePaso3': 'Copy the key and paste it below:',
+    'scan.claveLink': '🔗 Open aistudio.google.com/apikey',
+    'scan.clavePlaceholder': 'Paste your key here (e.g. AIza…)',
+    'scan.claveGuardar': '💾 Save key',
+    'scan.claveGuardada': '✅ Key saved! You can scan now.',
+    'scan.claveQuitar': 'Remove key',
+    'scan.claveNota':
+      'The key stays on your device and is only used to analyze your photos.',
+    'scan.disclaimer':
+      'AI-powered estimate · does not replace advice from a health professional.',
 
     // ---- Country filter ----
     'filtros.ariaPais': 'Filter by country or cuisine',

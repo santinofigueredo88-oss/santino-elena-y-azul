@@ -16,8 +16,10 @@ function archivosJsx(dir) {
 const usadas = new Set()
 for (const f of [...archivosJsx('src/components'), 'src/App.jsx']) {
   const c = readFileSync(f, 'utf8')
-  for (const m of c.matchAll(/t\('([a-z0-9.]+)'/g)) usadas.add(m[1])
-  for (const m of c.matchAll(/tN\('([a-z0-9.]+)'/g)) usadas.add(m[1])
+  // El lookbehind evita falsos positivos como createElement('canvas')
+  // o getContext('2d'), donde la 't' pertenece a otra palabra.
+  for (const m of c.matchAll(/(?<![a-z0-9_])t\('([a-z0-9.]+)'/g)) usadas.add(m[1])
+  for (const m of c.matchAll(/(?<![a-z0-9_])tN\('([a-z0-9.]+)'/g)) usadas.add(m[1])
 }
 
 const i18n = readFileSync('src/i18n.js', 'utf8')

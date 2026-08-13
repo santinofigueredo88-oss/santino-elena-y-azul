@@ -16,6 +16,7 @@ import {
   copiarAlPortapapeles,
 } from '../lib/share.js'
 import RecipeCard from './RecipeCard.jsx'
+import ScanFood from './ScanFood.jsx'
 
 // Recetas destacadas para mostrar en el inicio cuando todavía no hay ingredientes cargados
 const DESTACADAS = ['panqueques', 'milanesas-de-carne', 'fideos-con-tuco', 'pizza-casera']
@@ -143,16 +144,19 @@ function CocinasDelMundo() {
             <button
               key={pais.id}
               onClick={() => irAPais(pais.id)}
-              className="group rounded-2xl bg-white/95 p-4 text-left shadow-sm backdrop-blur transition-all hover:-translate-y-1 hover:shadow-lg dark:bg-stone-900/90"
+              className="group rounded-2xl bg-white/95 p-4 text-left shadow-sm ring-1 ring-white/50 backdrop-blur transition-all hover:-translate-y-1.5 hover:shadow-xl hover:ring-green-200 dark:bg-stone-900/90 dark:ring-white/5 dark:hover:ring-green-800"
             >
-              <span className="block text-4xl transition-transform group-hover:scale-110 group-hover:rotate-6" aria-hidden="true">
+              <span
+                className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-3xl shadow-sm ring-1 ring-stone-100 transition-transform group-hover:scale-110 group-hover:rotate-6 dark:bg-stone-800 dark:ring-stone-700"
+                aria-hidden="true"
+              >
                 {pais.emoji}
               </span>
-              <span className="mt-2 block font-display text-lg font-black text-stone-900 dark:text-white">
+              <span className="mt-3 block font-display text-lg font-black text-stone-900 dark:text-white">
                 {t('pais.' + pais.id, null, pais.nombre)}
               </span>
-              <span className="block text-xs font-extrabold text-green-700 dark:text-green-400">
-                {recetasPorPais[pais.id] ?? 0} {t('home.mundoRecetas')}
+              <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-lime-100 px-2.5 py-1 text-xs font-extrabold text-green-800 dark:bg-lime-900/50 dark:text-lime-300">
+                🍽️ {recetasPorPais[pais.id] ?? 0} {t('home.mundoRecetas')}
               </span>
             </button>
           ))}
@@ -253,16 +257,20 @@ function HeroIlustrado({ cantidad }) {
       />
       {/* Emojis de ingredientes flotando */}
       <div className="pointer-events-none absolute inset-0 hidden select-none sm:block" aria-hidden="true">
-        <span className="absolute left-[7%] top-10 rotate-[-14deg] text-5xl opacity-25">🍳</span>
-        <span className="absolute right-[9%] top-16 rotate-[10deg] text-6xl opacity-25">🥑</span>
-        <span className="absolute bottom-12 left-[13%] rotate-[8deg] text-4xl opacity-20">🍅</span>
-        <span className="absolute bottom-10 right-[16%] rotate-[-10deg] text-5xl opacity-20">🥕</span>
-        <span className="absolute left-[42%] top-6 text-4xl opacity-10">🌿</span>
-        <span className="absolute bottom-6 left-[46%] text-3xl opacity-10">🧄</span>
+        <span className="animate-float absolute left-[7%] top-10 rotate-[-14deg] text-5xl opacity-25" style={{ animationDuration: '7s' }}>🍳</span>
+        <span className="animate-float absolute right-[9%] top-16 rotate-[10deg] text-6xl opacity-25" style={{ animationDuration: '8s', animationDelay: '0.8s' }}>🥑</span>
+        <span className="animate-float absolute bottom-12 left-[13%] rotate-[8deg] text-4xl opacity-20" style={{ animationDuration: '6s', animationDelay: '1.6s' }}>🍅</span>
+        <span className="animate-float absolute bottom-10 right-[16%] rotate-[-10deg] text-5xl opacity-20" style={{ animationDuration: '9s', animationDelay: '0.4s' }}>🥕</span>
+        <span className="animate-float absolute left-[42%] top-6 text-4xl opacity-10" style={{ animationDuration: '7.5s', animationDelay: '1.2s' }}>🌿</span>
+        <span className="animate-float absolute bottom-6 left-[46%] text-3xl opacity-10" style={{ animationDuration: '8.5s', animationDelay: '2s' }}>🧄</span>
       </div>
 
       <div className="relative mx-auto max-w-3xl px-4 pb-16 pt-16 text-center sm:pt-20">
-        <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 text-sm font-extrabold text-green-800 shadow-sm ring-1 ring-green-200 backdrop-blur dark:bg-green-950/60 dark:text-green-200 dark:ring-green-800">
+        <span className="inline-flex items-center gap-2.5 rounded-full bg-white/80 px-4 py-1.5 text-sm font-extrabold text-green-800 shadow-sm ring-1 ring-green-200 backdrop-blur dark:bg-green-950/60 dark:text-green-200 dark:ring-green-800">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+          </span>
           {t('home.heroBadge', { n: cantidad })}
         </span>
         <h1 className="mt-4 font-display text-4xl font-black leading-tight tracking-tight text-stone-900 dark:text-white sm:text-6xl">
@@ -561,6 +569,9 @@ export default function HomeView() {
 
       {/* Cocinas del mundo */}
       <CocinasDelMundo />
+
+      {/* Escáner de comida por foto */}
+      <ScanFood />
 
       {/* Botones rápidos */}
       <div className="mx-auto mt-10 max-w-5xl px-4">

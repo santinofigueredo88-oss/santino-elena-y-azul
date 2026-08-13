@@ -36,14 +36,19 @@ npm run preview
   ingredientes (menos faltantes = más arriba), y una sección colapsada
   "Explorá más recetas" para el resto. Los condimentos básicos (sal, aceite,
   agua, pimienta, etc.) se asumen siempre disponibles y no cuentan como faltantes.
-- **Fotos reales en cada receta**: las 127 recetas tienen foto real del plato
+- **Fotos reales en cada receta**: las 154 recetas tienen foto real del plato
   (Wikimedia/Wikipedia para las argentinas y TheMealDB para las
   internacionales, URLs verificadas en `src/data/imagenes.js`), con un
   fallback ilustrado (gradiente + emoji) si la imagen no carga.
 - **🌍 Cocinas del mundo**: sección en el inicio con 5 cocinas
   internacionales (🇮🇹 Italia, 🇲🇽 México, 🇯🇵 Japón, 🇪🇸 España y
-  🇬🇧 Reino Unido) con 29 recetas típicas, cada una con su bandera en las
-  tarjetas y filtro por país en los resultados.
+  🇬🇧 Reino Unido) con 56 recetas típicas, cada una con su bandera en las
+  tarjetas, buscador dentro de la cocina y filtro por país en los resultados.
+- **📸 Escaneá tu comida**: subís una foto del plato y la IA te dice qué es,
+  sus nutrientes aproximados (calorías, proteínas, carbohidratos, grasas),
+  un veredicto (saludable / equilibrado / ocasional) y en qué te beneficia.
+  También detecta los ingredientes para cargarlos en la heladera de un toque.
+  Usa Google Gemini (gratis, sin tarjeta): ver "🔑 Activar el escáner" más abajo.
 - **🤖 Chef Guía (bot paso a paso)**: en cada receta, un chat que te guía
   paso a paso para cocinar. Detecta los ingredientes que tenés, avisa cuáles
   faltan, y **sugiere sustituciones con lo que ya tenés en casa**
@@ -86,11 +91,12 @@ src/
 ├── data/
 │   ├── ingredientes.js   # Base de ingredientes (categorías, sinónimos, básicos)
 │   ├── recetas.js        # 98 recetas caseras argentinas
-│   └── recetas-internacionales.js  # 29 recetas de otros países
+│   └── recetas-internacionales.js  # 56 recetas de otros países
 ├── lib/
 │   ├── matching.js       # Motor de match (faltantes, clasificación, filtros)
 │   ├── normalizar.js     # Normalización de texto y resolución de sinónimos
 │   ├── share.js          # Texto para WhatsApp y escala de porciones
+│   ├── prompt-comida.js  # Prompt compartido del escáner de comida
 │   └── storage.js        # Helpers de localStorage
 ├── context/
 │   └── AppContext.jsx    # Estado global (ingredientes, favoritos, lista, tema)
@@ -101,16 +107,35 @@ src/
 │   ├── RecipeCard.jsx    # Tarjeta reutilizable
 │   ├── RecipeModal.jsx   # Detalle de receta
 │   ├── CocinaTimer.jsx   # Temporizador de cocina
+│   ├── ScanFood.jsx      # Escáner de comida por foto (IA)
 │   ├── ShoppingListView.jsx
 │   └── FavoritesView.jsx
 └── App.jsx
+
+api/
+└── analizar-comida.js    # Función serverless (Vercel): puente a Gemini
 ```
 
 ## ☁️ Despliegue en Vercel
 
-Proyecto 100% estático (sin backend): conectá el repo en
-[vercel.com](https://vercel.com), el framework se detecta solo (Vite).
-Persistencia local vía `localStorage`.
+Conectá el repo en [vercel.com](https://vercel.com), el framework se detecta
+solo (Vite). Persistencia local vía `localStorage`. La carpeta `api/` se
+compila automáticamente como función serverless para el escáner de comida
+(no requiere configuración).
+
+## 🔑 Activar el escáner de comida
+
+El escáner usa **Google Gemini** (modelo de visión). La clave es gratuita y
+no pide tarjeta:
+
+1. Andá a **https://aistudio.google.com/apikey** y entrá con tu cuenta Google.
+2. Tocá **"Create API key"** y copiá la clave.
+3. En la app, abrí "📸 Escaneá tu comida" → "🔑 Configurar ahora" y pegala.
+   Queda guardada solo en tu navegador.
+
+Opcional: si preferís no pegar la clave en la app, definí la variable de
+entorno `GEMINI_API_KEY` en el proyecto de Vercel (Settings → Environment
+Variables) y la función serverless la usa sola.
 
 ## 🔧 Cómo agregar recetas
 
